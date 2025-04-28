@@ -7,3 +7,20 @@ PID modificati:
 Spari simili:
 1. 94613 ?
 2. 
+
+
+
+Simbologia
+n_e -> densità deuterio
+
+
+DOMANDE
+
+Linea blu?
+Cosa omp
+Parametri ion, k0 etc in rosso
+Densità va messo dentro trasporto particelle
+Zeff va messo dentro calcolo Zeff
+Tau dentro trasporto particelle
+ne_core dentro controllo Tcore perchè non viene passato
+Valore valvola dove va messa

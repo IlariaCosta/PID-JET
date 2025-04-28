@@ -6,21 +6,55 @@ PID modificati:
 
 Spari simili:
 1. 94613 ?
-2. 
+2. 94568
+3. 95232
+4. 95882
+5. 95884
+6. 95886
 
 
 
 Simbologia
 n_e -> densità deuterio
 
+Condizioni iniziali
+Considerare l'intervallo e usare come condizione iniziale il primo valore nel plot
 
 DOMANDE
 
-Linea blu?
-Cosa omp
-Parametri ion, k0 etc in rosso
-Densità va messo dentro trasporto particelle
-Zeff va messo dentro calcolo Zeff
-Tau dentro trasporto particelle
-ne_core dentro controllo Tcore perchè non viene passato
-Valore valvola dove va messa
+Linee densità tutte da considerare
+Cosa omp -> bordo a destra del plasma, collegato al tubo di flusso che va verso il divertore
+Parametri ion, k0 etc in rosso -> deve passarci un file
+Densità va messo dentro trasporto particelle -> al posto del PID va messo il valore della valvola
+Zeff va sostituito a calcolo Zeff
+Tau dentro trasporto particelle -> parametro da impostare per ottenere il fitting
+ne_core dentro controllo Tcore perchè non viene passato -> dobbiamo passarlo
+Valori 10^20 non vanno considerati
+
+VALVOLE
+Al posto del PID in "Trasporto particelle": vettore valori valvola 
+Vanno cambiati anche i valori che prendono in ingresso la valvola che rappresentano la percentuale di migrazione delle particelle
+
+DENSITA'
+dobbiamo solo inserire le condizioni iniziali nel blocco integratore e usare le linee scelte nel plot come mezzo di paragone per il fitting
+
+IN DATA - Legenda
+t	-> tempo
+Ip 	-> corrente plasma
+PTOT 	-> Potenza totale
+Prad 	-> ??
+WDIA 	-> ??
+WP 	-> ??
+ZEFF 	-> 
+D2 	-> densità del deuterio
+Psol 	-> Potenza solenoide
+BeOuter -> 
+Lan_TE 	-> diagnostica che dà temperatura elettronica
+Lan_Ne 	-> diagnostica che dà densità elettronica al bordo del plasma 
+
+FILE MATLAB
+- Primo for senza impurezze
+- Secondo for con impurezze
+
+Ne = neon -> impurezza usata dal JET per gli spari	
+

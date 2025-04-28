@@ -1,0 +1,175 @@
+%%
+clear;
+load("list_pulse.mat")
+load("pulse_bon.mat")
+
+%%
+
+for i=1:length(pulse_bon)
+ 
+    load(name_l{pulse_bon(i)});
+    
+
+    figure(1)
+    clf;
+    ax1=subplot(2,4,1)
+    plot(Data.t,Data.Ip)
+    title('Plasma current')
+
+    ax2=subplot(2,4,2)
+    hold off
+    plot(Data.t,Data.PTOT)
+    hold on
+    plot(Data.t,Data.Prad)
+    legend(['P_in';'Prad'])
+    title('Power')
+
+    ax3=subplot(2,4,3)
+    hold off
+    plot(Data.t,Data.WDIA)
+    hold on
+     plot(Data.t,Data.WP)
+     title('Plasma Energy')
+
+     ax4=subplot(2,4,4)
+     try
+    hold off
+    plot(Data.t,Data.ZEFF)
+    title('ZEFF')
+     catch
+     end
+
+    ax5=subplot(2,4,5)
+    hold off
+    plot(TS.T.t,TS.T.T(1,:));
+    yyaxis right
+    plot(TS.T.t,TS.T.T(56,:));     
+    legend(["Core";"OMP"])
+    title('Temperature')
+
+    ax6=subplot(2,4,6)
+    hold off
+    plot(TS.T.t,TS.N.T(1,:)); hold on
+    plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
+    plot(TS.T.t,TS.N.T(56,:));
+    ylim([0 Inf])
+  
+    legend(["Core";"TAR";"OMP"])
+    title('Density')
+
+    ax7=subplot(2,4,7)
+    hold off
+    plot(Data.t,Data.D2);
+    
+    if Error.NE==0 | Error.N2==0
+    yyaxis right
+   
+    try
+    plot(Data.t,Data.N2);
+    catch
+    plot(Data.t,Data.NE);
+
+    end
+    end
+    title('Valves')
+
+    
+    ax8=subplot(2,4,8)
+    hold off
+    plot(Data.t,Data.Lan_TE);
+    title('T_{TAR}')
+    
+    sgtitle(num2str(shot))
+   linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
+    drawnow;
+    pause()
+
+end 
+
+%%
+
+clear;
+load("list_pulse.mat")
+load("pulse_bon.mat")
+load("pulse_puff.mat")
+
+for i=1:length(pulse_puff)
+
+    load(name_l{pulse_puff(i)});
+    
+
+    figure(1)
+    clf;
+    ax1=subplot(2,4,1)
+    plot(Data.t,Data.Ip)
+    title('Plasma current')
+
+    ax2=subplot(2,4,2)
+    hold off
+    plot(Data.t,Data.PTOT)
+    hold on
+    plot(Data.t,Data.Prad)
+    legend(['P_in';'Prad'])
+    title('Power')
+
+    ax3=subplot(2,4,3)
+    hold off
+    plot(Data.t,Data.WDIA)
+    hold on
+     plot(Data.t,Data.WP)
+     title('Plasma Energy')
+
+     ax4=subplot(2,4,4)
+     try
+    hold off
+    plot(Data.t,Data.ZEFF)
+    title('ZEFF')
+     catch
+     end
+
+    ax5=subplot(2,4,5)
+    hold off
+    plot(TS.T.t,TS.T.T(1,:));
+     yyaxis right
+    plot(TS.T.t,TS.T.T(56,:));     
+    legend(["Core";"OMP"])
+    title('Temperature')
+
+      ax6=subplot(2,4,6)
+    hold off
+    plot(TS.T.t,TS.N.T(1,:)); hold on
+    plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
+    plot(TS.T.t,TS.N.T(56,:));
+    ylim([0 Inf])
+  
+       legend(["Core";"TAR";"OMP"])
+    title('Density')
+
+          ax7=subplot(2,4,7)
+    hold off
+    plot(Data.t,Data.D2);
+    
+    if Error.NE==0 | Error.N2==0
+    yyaxis right
+   
+    try
+    plot(Data.t,Data.N2);
+    catch
+    plot(Data.t,Data.NE);
+
+    end
+    end
+    title('Valves')
+
+    
+    ax8=subplot(2,4,8)
+    hold off
+    plot(Data.t,Data.Lan_TE);
+    title('T_{TAR}')
+    
+    sgtitle(num2str(shot))
+   linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
+    drawnow;
+    pause()
+
+end

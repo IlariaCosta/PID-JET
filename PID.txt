@@ -1,0 +1,9 @@
+PID modificati:
+1. Fuori in alto
+2. Trasporto particelle
+3. Controllo Tcore e calcolo Pcond
+
+
+Spari simili:
+1. 94613 ?
+2. 

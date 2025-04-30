@@ -346,13 +346,22 @@ end
 
 %% VETTORI
 %% Sparo 94568
+% condizioni iniziali
+ci_core = 2.7*10^19;
+ci_tar = 2.5*10^19;
+ci_omp = 1*10^19;
+
 i1 = 3001;
 i2 = 6001;
-tempo = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo); % formato per simulink
-n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core
-n_omp_data = timeseries(TS.N.T(56,:)', TS.T.t); % densità vera omp
-n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo); % densità vera omp
+tempo_data = Data.t(i1:i2)';
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+
+ii1 = 61;
+ii2 = 121;
+tempo_TS = TS.N.t(ii1:ii2)';
+n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
+n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 
 %% Sparo 94767
 i1 = 8001;

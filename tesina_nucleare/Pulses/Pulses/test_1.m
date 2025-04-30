@@ -345,7 +345,7 @@ for i=1:length(pulse_bon)
 end 
 
 %% VETTORI
-%% Sparo 1
+%% Sparo 94568
 i1 = 3001;
 i2 = 6001;
 tempo = Data.t(i1:i2)';
@@ -354,9 +354,18 @@ n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core
 n_omp_data = timeseries(TS.N.T(56,:)', TS.T.t); % densità vera omp
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo); % densità vera omp
 
-%% Sparo 2
+%% Sparo 94767
 i1 = 8001;
 i2 = 13001;
+tempo = Data.t(i1:i2)';
+valvola = timeseries(Data.D2(i1:i2)', tempo); % formato per simulink
+n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core
+n_omp_data = timeseries(TS.N.T(56,:)', TS.T.t); % densità vera omp
+n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo); % densità vera omp
+
+%% Sparo 95503
+i1 = 2001;
+i2 = 6851;
 tempo = Data.t(i1:i2)';
 valvola = timeseries(Data.D2(i1:i2)', tempo); % formato per simulink
 n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core

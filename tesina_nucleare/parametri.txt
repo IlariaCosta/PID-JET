@@ -3,14 +3,17 @@ Parametri non noti:
 		percentuali di migrazione a seguito della valvola
 		tau 
 		tau1
+
 	nel subsystem TRASPORTO IMPUREZZE: !!POTREBBERO ESSERE DIVERSI DA QUELLI PRECEDENTI!!
 		percentuali di migrazione a seguito della valvola
 		tau 
 		tau1
+
 	nel subsystem CONTROLLO T_CORE E CALCOLO P_COND\DINAMICA-VARIAZIONE TEMPERATURA:	
 		tau_e
 	nel subsystem CONTROLLO T_CORE E CALCOLO P_COND\CALCOLO TE
 		media
+
 	nel subsystem FOURIER: 
 		alpha 
 		gamma 

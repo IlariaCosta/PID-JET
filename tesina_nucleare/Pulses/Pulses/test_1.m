@@ -369,9 +369,27 @@ n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
 n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
+% Potenza -> diagramma Controllo
+P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_in.Time = P_in.Time - P_in.Time(1);
+
+% Z efficace
+Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
+Z_eff.Time = Z_eff.Time - Z_eff.Time(1);
+
+% Temperatura
+temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
+temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
+temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
+temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+%condizioni iniziali temperatura
+ci_T_core = 1200;
+ci_T_omp = 100;
+
 %% Sparo 94767
 i = find(contains(name_l, '94767'));  % trova l'indice del nome che contiene '94568'
 load(name_l{i});
+
 % condizioni iniziali
 ci_core = 3.36*10^19;
 ci_tar = 3.8*10^19;
@@ -393,9 +411,27 @@ n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
 n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
+% Potenza -> diagramma Controllo
+P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_in.Time = P_in.Time - P_in.Time(1);
+
+% Z efficace
+Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
+Z_eff.Time = Z_eff.Time - Z_eff.Time(1);
+
+% Temperatura
+temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
+temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
+temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
+temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+%condizioni iniziali temperatura
+ci_T_core = 1500;
+ci_T_omp = 100;
+
 %% Sparo 95503
 i = find(contains(name_l, '95503'));  % trova l'indice del nome che contiene '94568'
 load(name_l{i});
+
 % condizioni iniziali
 ci_core = 1.49*10^19;
 ci_tar = 2.55*10^18;
@@ -416,6 +452,23 @@ n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
 n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
 n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
+
+% Potenza -> diagramma Controllo
+P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_in.Time = P_in.Time - P_in.Time(1);
+
+% Z efficace
+Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
+Z_eff.Time = Z_eff.Time - Z_eff.Time(1);
+
+% Temperatura
+temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
+temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
+temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
+temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+%condizioni iniziali temperatura
+ci_T_core = 1370;
+ci_T_omp = 68;
 
 %%
 

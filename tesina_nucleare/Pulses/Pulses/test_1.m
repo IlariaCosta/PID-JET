@@ -72,7 +72,7 @@ Te_omp2 = 100 %temperatura elettronica outer midplane nella simulazione in cui l
 
 tau_deu = 1/3 % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
 A_deu_med = -1/tau_deu
-B_deu_med = 1
+B_deu_med = 1;
 C_deu_med = 1 
 D_deu_med = 0
 
@@ -355,32 +355,61 @@ i1 = 3001;
 i2 = 6001;
 tempo_data = Data.t(i1:i2)';
 valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
 
 ii1 = 61;
 ii2 = 121;
 tempo_TS = TS.N.t(ii1:ii2)';
 n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
+n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
 n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
+n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 %% Sparo 94767
+% condizioni iniziali
+ci_core = 3.36*10^19;
+ci_tar = 3.8*10^19;
+ci_omp = 1.8*10^19;
+
 i1 = 8001;
-i2 = 13001;
-tempo = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo); % formato per simulink
-n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core
-n_omp_data = timeseries(TS.N.T(56,:)', TS.T.t); % densità vera omp
-n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo); % densità vera omp
+i2 = 11001;
+tempo_data = Data.t(i1:i2)';
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
+n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
+
+ii1 = 161;
+ii2 = 222;
+tempo_TS = TS.N.t(ii1:ii2)';
+n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
+n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
+n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
+n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 %% Sparo 95503
+% condizioni iniziali
+ci_core = 1.49*10^19;
+ci_tar = 2.55*10^18;
+ci_omp = 8.02*10^18;
+
 i1 = 2001;
 i2 = 6851;
-tempo = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo); % formato per simulink
-n_core_data = timeseries(TS.N.T(1,:)', TS.T.t); % densità vera core
-n_omp_data = timeseries(TS.N.T(56,:)', TS.T.t); % densità vera omp
-n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo); % densità vera omp
+tempo_data = Data.t(i1:i2)';
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
+n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
 
+ii1 = 41;
+ii2 = 141;
+tempo_TS = TS.N.t(ii1:ii2)';
+n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
+n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
+n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
+n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 %%
 

@@ -346,6 +346,8 @@ end
 
 %% VETTORI
 %% Sparo 94568
+i = find(contains(name_l, '94568'));  % trova l'indice del nome che contiene '94568'
+load(name_l{i});
 % condizioni iniziali
 ci_core = 2.7*10^19;
 ci_tar = 2.5*10^19;
@@ -368,6 +370,8 @@ n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 %% Sparo 94767
+i = find(contains(name_l, '94767'));  % trova l'indice del nome che contiene '94568'
+load(name_l{i});
 % condizioni iniziali
 ci_core = 3.36*10^19;
 ci_tar = 3.8*10^19;
@@ -390,6 +394,8 @@ n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 %% Sparo 95503
+i = find(contains(name_l, '95503'));  % trova l'indice del nome che contiene '94568'
+load(name_l{i});
 % condizioni iniziali
 ci_core = 1.49*10^19;
 ci_tar = 2.55*10^18;

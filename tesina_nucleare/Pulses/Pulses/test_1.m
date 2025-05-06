@@ -267,73 +267,83 @@ for i=1:length(pulse_bon)
  
     load(name_l{pulse_bon(i)});
     
-
     figure(1)
     clf;
     ax1=subplot(2,4,1)
     plot(Data.t,Data.Ip)
     title('Plasma current')
-
+    grid on;
     ax2=subplot(2,4,2)
+    grid on;
     hold off
     plot(Data.t,Data.PTOT)
+    grid on;
     hold on
     plot(Data.t,Data.Prad)
     legend(['P_in';'Prad'])
     title('Power')
-
+    grid on;
     ax3=subplot(2,4,3)
     hold off
     plot(Data.t,Data.WDIA)
+    grid on;
     hold on
      plot(Data.t,Data.WP)
      title('Plasma Energy')
-
+     grid on;
      ax4=subplot(2,4,4)
+     grid on;
      try
     hold off
     plot(Data.t,Data.ZEFF)
+    grid on;
     title('ZEFF')
      catch
      end
-
     ax5=subplot(2,4,5)
+    grid on;
     hold off
     plot(TS.T.t,TS.T.T(1,:));
     yyaxis right
     plot(TS.T.t,TS.T.T(56,:));     
     legend(["Core";"OMP"])
     title('Temperature')
-
+    grid on;
     ax6=subplot(2,4,6)
+    grid on;
     hold off
     plot(TS.T.t,TS.N.T(1,:)); hold on
+    grid on;
     plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
+    grid on;
     plot(TS.T.t,TS.N.T(56,:));
+    grid on;
     ylim([0 Inf])
   
     legend(["Core";"TAR";"OMP"])
     title('Density')
-
     ax7=subplot(2,4,7)
+    grid on;
     hold off
     plot(Data.t,Data.D2);
+    grid on;
     
     if Error.NE==0 | Error.N2==0
     yyaxis right
    
     try
     plot(Data.t,Data.N2);
+    grid on;
     catch
     plot(Data.t,Data.NE);
-
+    grid on;
     end
     end
     title('Valves')
-
     
     ax8=subplot(2,4,8)
     hold off
+    grid on;
     plot(Data.t,Data.Lan_TE);
     title('T_{TAR}')
     
@@ -341,18 +351,18 @@ for i=1:length(pulse_bon)
    linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
     drawnow;
     pause()
-
-end 
+end
 
 %% VETTORI
 %% Sparo 94568
 i = find(contains(name_l, '94568'));  % trova l'indice del nome che contiene '94568'
 load(name_l{i});
 % condizioni iniziali
-ci_core = 2.7*10^19;
-ci_tar = 2.5*10^19;
+ci_core = 2.05*10^19;
+ci_tar = 2.6*10^19;
 ci_omp = 1*10^19;
 
+% tempo 43-46
 i1 = 3001;
 i2 = 6001;
 tempo_data = Data.t(i1:i2)';
@@ -370,8 +380,8 @@ n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 % Potenza -> diagramma Controllo
-P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
-P_in.Time = P_in.Time - P_in.Time(1);
+P_tot = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_tot.Time = P_tot.Time - P_tot.Time(1);
 
 % Z efficace
 Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
@@ -382,6 +392,8 @@ temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
 temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
 temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
 temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
+temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
 %condizioni iniziali temperatura
 ci_T_core = 1200;
 ci_T_omp = 100;
@@ -470,90 +482,131 @@ temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
 ci_T_core = 1370;
 ci_T_omp = 68;
 
-%%
 
-% clear;
-% load("list_pulse.mat")
-% load("pulse_bon.mat")
-% load("pulse_puff.mat")
-% 
-% for i=1:length(pulse_puff)
-% 
-%     load(name_l{pulse_puff(i)});
-% 
-% 
-%     figure(1)
-%     clf;
-%     ax1=sub% plot(2,4,1)
-%     % plot(Data.t,Data.Ip)
-%     title('Plasma current')
-% 
-%     ax2=sub% plot(2,4,2)
-%     hold off
-%     % plot(Data.t,Data.PTOT)
-%     hold on
-%     % plot(Data.t,Data.Prad)
-%     legend(['P_in';'Prad'])
-%     title('Power')
-% 
-%     ax3=sub% plot(2,4,3)
-%     hold off
-%     % plot(Data.t,Data.WDIA)
-%     hold on
-%      % plot(Data.t,Data.WP)
-%      title('Plasma Energy')
-% 
-%      ax4=sub% plot(2,4,4)
-%      try
-%     hold off
-%     % plot(Data.t,Data.ZEFF)
-%     title('ZEFF')
-%      catch
-%      end
-% 
-%     ax5=sub% plot(2,4,5)
-%     hold off
-%     % plot(TS.T.t,TS.T.T(1,:));
-%      yyaxis right
-%     % plot(TS.T.t,TS.T.T(56,:));     
-%     legend(["Core";"OMP"])
-%     title('Temperature')
-% 
-%       ax6=sub% plot(2,4,6)
-%     hold off
-%     % plot(TS.T.t,TS.N.T(1,:)); hold on
-%     % plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
-%     % plot(TS.T.t,TS.N.T(56,:));
-%     ylim([0 Inf])
-% 
-%        legend(["Core";"TAR";"OMP"])
-%     title('Density')
-% 
-%           ax7=sub% plot(2,4,7)
-%     hold off
-%     % plot(Data.t,Data.D2);
-% 
-%     if Error.NE==0 | Error.N2==0
-%     yyaxis right
-% 
-%     try
-%     % plot(Data.t,Data.N2);
-%     catch
-%     % plot(Data.t,Data.NE);
-% 
-%     end
-%     end
-%     title('Valves')
-% 
-% 
-%     ax8=sub% plot(2,4,8)
-%     hold off
-%     % plot(Data.t,Data.Lan_TE);
-%     title('T_{TAR}')
-% 
-%     sgtitle(num2str(shot))
-%    linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
-%     drawnow;
-%     pause()
-% 
-% end
+
+%% fit_tau_tau1
+close all 
+% === CARICAMENTO DATI E CONDIZIONI INIZIALI ===
+i = find(contains(name_l, '94568'));
+load(name_l{i});
+ 
+% Condizioni iniziali (densità)
+ci_core = 2.05e19;
+ci_tar = 2.6e19;
+ci_omp = 1.0e19;
+ci_SOL = 1.5e19;  % Stima iniziale
+x0 = [ci_core; ci_omp; ci_SOL; ci_tar];
+ 
+% Intervallo temporale
+i1 = 3001;
+i2 = 6001;
+tempo_data = Data.t(i1:i2)';
+tempo_data = tempo_data - tempo_data(1);
+ 
+% Dati reali (interpolati)
+n_tar_data_raw = Data.Lan_Ne(i1:i2)';
+n_omp_data_raw = TS.N.T(56,61:121)';
+n_core_data_raw = TS.N.T(1,61:121)';
+tempo_TS = TS.N.t(61:121)';
+tempo_TS = tempo_TS - tempo_TS(1);
+ 
+% Interpolazione su tempo_data
+n_core_data = interp1(tempo_TS, n_core_data_raw, tempo_data, 'linear', 'extrap');
+n_omp_data = interp1(tempo_TS, n_omp_data_raw, tempo_data, 'linear', 'extrap');
+n_tar_data = n_tar_data_raw;
+n_SOL_data = ones(size(n_tar_data)) * ci_SOL;  % dummy
+ 
+% === PARAMETRI DA ESPLORARE ===
+taus = linspace(0.01, 1000, 500);
+tau1s = linspace(0.01, 1000, 500);
+S_vals = linspace(0.1, 0.9, 100);  % S_core da 0.1 a 0.9
+ 
+min_err = Inf;
+best_tau = 0;
+best_tau1 = 0;
+best_S_core = 0;
+best_S_tar = 0;
+ 
+% === LOOP SU TUTTE LE COMBINAZIONI ===
+for i = 1:length(taus)
+    for j = 1:length(tau1s)
+        for k = 1:length(S_vals)
+            S_core = S_vals(k);
+            S_tar = 1 - S_core;  % Imposto S_tar in modo che la somma sia 1
+ 
+            % Vincolo: somma ∈ [0.9, 1]
+            if S_core + S_tar >= 0.9 && S_core + S_tar <= 1.0
+                tau = taus(i);
+                tau1 = tau1s(j);
+ 
+                % Simulazione
+                [t, x] = ode45(@(t,x) model(t, x, S_core, S_tar, tau, tau1), tempo_data, x0);
+ 
+                % Estrai densità simulate
+                n_core_sim = x(:,1);
+                n_omp_sim  = x(:,2);
+                n_SOL_sim  = x(:,3);
+                n_tar_sim  = x(:,4);
+ 
+                % Errore totale
+                err = sum((n_core_sim - n_core_data).^2 + ...
+                          (n_omp_sim  - n_omp_data ).^2 + ...
+                          (n_SOL_sim  - n_SOL_data ).^2 + ...
+                          (n_tar_sim  - n_tar_data ).^2);
+ 
+                % Salva se è la migliore
+                if err < min_err
+                    min_err = err;
+                    best_tau = tau;
+                    best_tau1 = tau1;
+                    best_S_core = S_core;
+                    best_S_tar = S_tar;
+                    best_sim = x;
+                end
+            end
+        end
+    end
+end
+ 
+fprintf('Migliori parametri:\n');
+fprintf('tau    = %.3f\n', best_tau);
+fprintf('tau1   = %.3f\n', best_tau1);
+fprintf('S_core = %.3f\n', best_S_core);
+fprintf('S_tar  = %.3f\n', best_S_tar);
+fprintf('Errore = %.4e\n', min_err);
+ 
+% === PLOT RISULTATI ===
+figure;
+subplot(2,2,1)
+plot(tempo_data, n_core_data, 'k--', tempo_data, best_sim(:,1), 'b')
+title('n_{core}'); legend('dati','modello')
+ 
+subplot(2,2,2)
+plot(tempo_data, n_omp_data, 'k--', tempo_data, best_sim(:,2), 'r')
+title('n_{omp}'); legend('dati','modello')
+ 
+subplot(2,2,3)
+plot(tempo_data, n_SOL_data, 'k--', tempo_data, best_sim(:,3), 'g')
+title('n_{SOL}'); legend('dati','modello')
+ 
+subplot(2,2,4)
+plot(tempo_data, n_tar_data, 'k--', tempo_data, best_sim(:,4), 'm')
+title('n_{tar}'); legend('dati','modello')
+ 
+% === FUNZIONE MODELLO ===
+function dxdt = model(~, x, S_core, S_tar, tau, tau1)
+    n_core = x(1);
+    n_omp  = x(2);
+    n_SOL  = x(3);
+    n_tar  = x(4);
+ 
+    n_core_dot = S_core + (n_omp - n_core)/tau;
+    n_omp_dot  = (n_core - n_omp)/tau + (n_SOL - n_omp)/tau;
+    n_SOL_dot  = (n_omp - n_SOL)/tau + (n_tar - n_SOL)/tau;
+    n_tar_dot  = S_tar + (n_SOL - n_tar)/tau - n_tar/tau1;
+ 
+    dxdt = [n_core_dot;
+            n_omp_dot;
+            n_SOL_dot;
+            n_tar_dot];
+end

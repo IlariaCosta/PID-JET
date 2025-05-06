@@ -484,6 +484,7 @@ ci_T_omp = 68;
 
 
 
+%%
 %% fit_tau_tau1
 close all 
 % === CARICAMENTO DATI E CONDIZIONI INIZIALI ===
@@ -517,8 +518,8 @@ n_tar_data = n_tar_data_raw;
 n_SOL_data = ones(size(n_tar_data)) * ci_SOL;  % dummy
  
 % === PARAMETRI DA ESPLORARE ===
-taus = linspace(0.01, 1000, 500);
-tau1s = linspace(0.01, 1000, 500);
+taus = linspace(0.01, 10000, 1000);
+tau1s = linspace(0.01, 10000, 1000);
 S_vals = linspace(0.1, 0.9, 100);  % S_core da 0.1 a 0.9
  
 min_err = Inf;

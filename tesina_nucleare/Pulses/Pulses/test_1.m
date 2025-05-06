@@ -343,8 +343,8 @@ for i=1:length(pulse_bon)
     
     ax8=subplot(2,4,8)
     hold off
-    grid on;
     plot(Data.t,Data.Lan_TE);
+    grid on;
     title('T_{TAR}')
     
     sgtitle(num2str(shot))
@@ -354,17 +354,20 @@ for i=1:length(pulse_bon)
 end
 
 %% VETTORI
-%% Sparo 94568
+%% 1. Sparo 94568
 i = find(contains(name_l, '94568'));  % trova l'indice del nome che contiene '94568'
-load(name_l{i});
-% condizioni iniziali
+sparo_1 = name_l{i};
+load(sparo_1);
+
+% condizioni iniziali densità
 ci_core = 2.05*10^19;
 ci_tar = 2.6*10^19;
 ci_omp = 1*10^19;
 
-% tempo 43-46
+% tempo 43-46 s
 i1 = 3001;
 i2 = 6001;
+indici = [i1 i2];
 tempo_data = Data.t(i1:i2)';
 valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
 valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
@@ -398,19 +401,27 @@ temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
 ci_T_core = 1200;
 ci_T_omp = 100;
 
-%% Sparo 94767
-i = find(contains(name_l, '94767'));  % trova l'indice del nome che contiene '94568'
-load(name_l{i});
+% Energia
+media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
+media_energia.Time = media_energia.Time - media_energia.Time(1);
+ci_energia = media_energia.Data(1);
 
-% condizioni iniziali
+%% 2. Sparo 94767 ----------------------------- PROBABILE DA CANCELLARE - ENERGIA NON FITTA
+i = find(contains(name_l, '94767'));  
+sparo_2 = name_l{i};
+load(sparo_2);
+
+% condizioni iniziali densità
 ci_core = 3.36*10^19;
-ci_tar = 3.8*10^19;
+ci_tar = 1.39*10^20;
 ci_omp = 1.8*10^19;
 
+% tempo 48-51 s
 i1 = 8001;
 i2 = 11001;
+indici = [i1 i2];
 tempo_data = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % deuterio
 valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
 n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
@@ -440,25 +451,33 @@ temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
 ci_T_core = 1500;
 ci_T_omp = 100;
 
-%% Sparo 95503
-i = find(contains(name_l, '95503'));  % trova l'indice del nome che contiene '94568'
-load(name_l{i});
+% Energia
+media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
+media_energia.Time = media_energia.Time - media_energia.Time(1);
+ci_energia = media_energia.Data(1);
 
-% condizioni iniziali
+%% 3. Sparo 95503
+i = find(contains(name_l, '95503')); 
+sparo_3 = name_l{i};
+load(sparo_3);
+
+% condizioni iniziali densità
 ci_core = 1.49*10^19;
 ci_tar = 2.55*10^18;
 ci_omp = 8.02*10^18;
 
-i1 = 2001;
-i2 = 6851;
+% tempo 4-47
+i1 = find(Data.t == 42);
+i2 = find(Data.t == 47);
+indici = [i1 i2];
 tempo_data = Data.t(i1:i2)';
 valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
 valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
 n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
 
-ii1 = 41;
-ii2 = 141;
+ii1 = find(startsWith(string(TS.N.t), '42'), 1);
+ii2 = find(startsWith(string(TS.N.t), '47'), 1);
 tempo_TS = TS.N.t(ii1:ii2)';
 n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
 n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
@@ -466,8 +485,8 @@ n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
 n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
 
 % Potenza -> diagramma Controllo
-P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
-P_in.Time = P_in.Time - P_in.Time(1);
+P_tot = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_tot.Time = P_tot.Time - P_tot.Time(1);
 
 % Z efficace
 Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
@@ -478,12 +497,23 @@ temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
 temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
 temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
 temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
+temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
 %condizioni iniziali temperatura
-ci_T_core = 1370;
-ci_T_omp = 68;
+ci_T_core = 1200;
+ci_T_omp = 100;
 
+% Energia
+media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
+media_energia.Time = media_energia.Time - media_energia.Time(1);
+ci_energia = media_energia.Data(1);
 
+%% 4. Sparo 95502
+i = find(contains(name_l, '95502')); 
+sparo_4 = name_l{i};
+load(sparo_4);
 
+<<<<<<< Updated upstream
 %%
 %% fit_tau_tau1
 close all 
@@ -501,9 +531,84 @@ x0 = [ci_core; ci_omp; ci_SOL; ci_tar];
 % Intervallo temporale
 i1 = 3001;
 i2 = 6001;
+=======
+% condizioni iniziali
+ci_core = 1.95*10^19;
+ci_tar = 1.85*10^19;
+ci_omp = 0.95*10^19;
+
+i1 = find(Data.t == 43);
+i2 = find(Data.t == 46);
+indici = [i1 i2];
+>>>>>>> Stashed changes
 tempo_data = Data.t(i1:i2)';
-tempo_data = tempo_data - tempo_data(1);
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
+n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
+
+ii1 = find(startsWith(string(TS.N.t), '43'), 1);
+ii2 = find(startsWith(string(TS.N.t), '46'), 1);
+tempo_TS = TS.N.t(ii1:ii2)';
+n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
+n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
+n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
+n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
+
+% Potenza -> diagramma Controllo
+P_tot = timeseries(Data.PTOT(i1:i2)', tempo_data);
+P_tot.Time = P_tot.Time - P_tot.Time(1);
+
+% Z efficace
+Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
+Z_eff.Time = Z_eff.Time - Z_eff.Time(1);
+
+% Temperatura
+temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
+temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
+temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
+temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
+temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
+temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
+%condizioni iniziali temperatura
+ci_T_core = 1168;
+ci_T_omp = 1173;
+
+% Energia
+media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
+media_energia.Time = media_energia.Time - media_energia.Time(1);
+ci_energia = media_energia.Data(1);
+
+%% FITTING
+
+%% Sparo 1
+clc
+close all
+[best_tau, best_E] = fit_controllo(sparo_1, indici);
+[alpha_best, gamma_best] = fit_alpha_gamma(...
+    temp_core_data.Time, ...
+    temp_omp_data.Data, ...
+    temp_tar_data.Data, ...
+    out.P_cond.Data, ...
+    out.qrad.Data, ...
+    10, ...         % Text, ad esempio costante
+    ci_T_omp, ...
+    ci_T_core ...
+);
+
+%% Sparo 2
+[best_tau, best_E] = fit_controllo(sparo_2, indici);
+
+%% Sparo 3
+[best_tau, best_E] = fit_controllo(sparo_3, indici);
+
+%% Sparo 4
+[best_tau, best_E] = fit_controllo(sparo_4, indici);
+
+%%
+save best_param_controllo.mat best_tau
  
+<<<<<<< Updated upstream
 % Dati reali (interpolati)
 n_tar_data_raw = Data.Lan_Ne(i1:i2)';
 n_omp_data_raw = TS.N.T(56,61:121)';
@@ -611,3 +716,6 @@ function dxdt = model(~, x, S_core, S_tar, tau, tau1)
             n_SOL_dot;
             n_tar_dot];
 end
+=======
+
+>>>>>>> Stashed changes

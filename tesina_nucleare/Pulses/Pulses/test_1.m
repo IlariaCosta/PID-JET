@@ -400,7 +400,7 @@ temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
 
 % condizioni iniziali temperatura
 ci_T_core = 1300;
-ci_T_omp = 65.8;
+ci_T_omp = 59;
 ci_T_tar = 6.6;
 
 % Energia
@@ -419,7 +419,7 @@ ci_core = 1.49*10^19;
 ci_tar = 2.55*10^18;
 ci_omp = 8.02*10^18;
 
-% tempo 4-47
+% tempo 42-47
 i1 = find(Data.t == 42);
 i2 = find(Data.t == 47);
 indici = [i1 i2];
@@ -574,7 +574,7 @@ for i = 1:length(alphas)
  
         % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
         ode_fun = @(t, y) [
-            (y(2) - k_B * y(1)) * alpha + P_cond_fun(t) / C1 - q_rad_fun(t) / C2;
+            (y(2) - k_B * y(1)) * alpha + P_cond_interp(t) / C1 - q_rad_fun(t) / C2;
             (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
             (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
         ];

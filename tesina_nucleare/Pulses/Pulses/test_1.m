@@ -397,69 +397,22 @@ temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
 temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
 temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
 temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
-%condizioni iniziali temperatura
-ci_T_core = 1200;
-ci_T_omp = 100;
+
+% condizioni iniziali temperatura
+ci_T_core = 1300;
+ci_T_omp = 65.8;
+ci_T_tar = 6.6;
 
 % Energia
 media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
 media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
-%% 2. Sparo 94767 ----------------------------- PROBABILE DA CANCELLARE - ENERGIA NON FITTA
-i = find(contains(name_l, '94767'));  
+
+%% 2. Sparo 95503
+i = find(contains(name_l, '95503')); 
 sparo_2 = name_l{i};
 load(sparo_2);
-
-% condizioni iniziali densità
-ci_core = 3.36*10^19;
-ci_tar = 1.39*10^20;
-ci_omp = 1.8*10^19;
-
-% tempo 48-51 s
-i1 = 8001;
-i2 = 11001;
-indici = [i1 i2];
-tempo_data = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo_data); % deuterio
-valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
-n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
-n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
-
-ii1 = 161;
-ii2 = 222;
-tempo_TS = TS.N.t(ii1:ii2)';
-n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
-n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
-n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
-n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
-
-% Potenza -> diagramma Controllo
-P_in = timeseries(Data.PTOT(i1:i2)', tempo_data);
-P_in.Time = P_in.Time - P_in.Time(1);
-
-% Z efficace
-Z_eff = timeseries(Data.ZEFF(i1:i2)', tempo_data);
-Z_eff.Time = Z_eff.Time - Z_eff.Time(1);
-
-% Temperatura
-temp_core_data = timeseries(TS.T.T(1,ii1:ii2)', tempo_TS);
-temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
-temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
-temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
-%condizioni iniziali temperatura
-ci_T_core = 1500;
-ci_T_omp = 100;
-
-% Energia
-media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
-media_energia.Time = media_energia.Time - media_energia.Time(1);
-ci_energia = media_energia.Data(1);
-
-%% 3. Sparo 95503
-i = find(contains(name_l, '95503')); 
-sparo_3 = name_l{i};
-load(sparo_3);
 
 % condizioni iniziali densità
 ci_core = 1.49*10^19;
@@ -499,19 +452,21 @@ temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
 temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
 temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
 temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
-%condizioni iniziali temperatura
+
+% condizioni iniziali temperatura
 ci_T_core = 1200;
 ci_T_omp = 100;
+ci_T_tar = 6.6;
 
 % Energia
 media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
 media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
-%% 4. Sparo 95502
+%% 3. Sparo 95502
 i = find(contains(name_l, '95502')); 
-sparo_4 = name_l{i};
-load(sparo_4);
+sparo_3 = name_l{i};
+load(sparo_3);
 
 % condizioni iniziali
 ci_core = 1.95*10^19;
@@ -550,9 +505,11 @@ temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
 temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
 temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
 temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
-%condizioni iniziali temperatura
+
+% condizioni iniziali temperatura
 ci_T_core = 1168;
 ci_T_omp = 1173;
+ci_T_tar = 6.6;
 
 % Energia
 media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
@@ -565,25 +522,91 @@ ci_energia = media_energia.Data(1);
 clc
 close all
 [best_tau, best_E] = fit_controllo(sparo_1, indici);
-[alpha_best, gamma_best] = fit_alpha_gamma(...
-    temp_core_data.Time, ...
-    temp_omp_data.Data, ...
-    temp_tar_data.Data, ...
-    out.P_cond.Data, ...
-    out.qrad.Data, ...
-    10, ...         % Text, ad esempio costante
-    ci_T_omp, ...
-    ci_T_core ...
-);
+
+% Tempo comune
+t_data = tempo_TS;
+ 
+% Estrai e interpola dati su t_data
+P_cond_vec = out.P_cond.Data;
+tempo_cond = out.P_cond.Time;
+q_rad_vec = out.qrad.Data;
+P_cond_interp = interp1(tempo_cond, P_cond_vec, t_data, 'linear', 'extrap');
+q_rad_interp  = interp1(tempo_cond, q_rad_vec, t_data, 'linear', 'extrap');
+ 
+% Dati simulati
+Tomp_sim = out.Tomp.Data;
+t_Tomp = out.Tomp.Time;
+Ttar_sim = out.Ttar.Data;
+Tomp_sim_interp = interp1(t_Tomp, Tomp_sim, t_data, 'linear', 'extrap');
+Ttar_sim_interp = interp1(t_Tomp, Ttar_sim, t_data, 'linear', 'extrap');
+ 
+% Dati misurati
+Tomp = temp_omp_data.Data;
+t_Tomp_mis = temp_omp_data.Time;
+Ttar = temp_tar_data.Data;
+t_Ttar_mis = temp_tar_data.Time;
+Tomp_interp = interp1(t_Tomp_mis, Tomp, t_data, 'linear', 'extrap');
+Ttar_interp = interp1(t_Ttar_mis, Ttar, t_data, 'linear', 'extrap');
+ 
+% Costanti geometriche
+C1 = 1000 * 0.014 * 3;
+C2 = 3 * 3;
+C3 = 3 * 3;
+C4 = 9;
+
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
+alphas = linspace(0.01, 100, 100);    
+gammas = linspace(0.01, 100, 100);    
+ 
+min_err = inf;  % errore minimo iniziale
+k_B = 8.617e-5;  % costante di Boltzmann
+ 
+% Condizioni iniziali
+Tsol0 = (ci_T_omp + ci_T_tar) / 2;
+y0 = [ci_T_omp; Tsol0; ci_T_tar];
+ 
+for i = 1:length(alphas)
+    for j = 1:length(gammas)
+        alpha = alphas(i);
+        gamma = gammas(j);
+ 
+        % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
+        ode_fun = @(t, y) [
+            (y(2) - k_B * y(1)) * alpha + P_cond_fun(t) / C1 - q_rad_fun(t) / C2;
+            (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
+            (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
+        ];
+ 
+        [~, y] = ode45(ode_fun, t_data, y0);
+ 
+        Tomp_sim = y(:,1);
+        Ttar_sim = y(:,3);
+ 
+        err = sum((Tomp_sim - Tomp_interp).^2) + sum((Ttar_sim - Ttar_interp).^2);
+ 
+        if err < min_err
+            min_err = err;
+            alpha_best = alpha;
+            gamma_best = gamma;
+            y_best = y;
+        end
+    end
+end
+
+fprintf('Migliori parametri:\n');
+fprintf('alpha    = %.3f\n', alpha_best);
+fprintf('gamma   = %.3f\n', gamma_best);
+
+
+
 
 %% Sparo 2
 [best_tau, best_E] = fit_controllo(sparo_2, indici);
 
 %% Sparo 3
 [best_tau, best_E] = fit_controllo(sparo_3, indici);
-
-%% Sparo 4
-[best_tau, best_E] = fit_controllo(sparo_4, indici);
 
 %%
 save best_param_controllo.mat best_tau

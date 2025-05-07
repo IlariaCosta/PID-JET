@@ -1,53 +1,45 @@
-function [alpha_best, gamma_best] = fit_alpha_gamma(t_data, Tomp_data, Ttar_data, P_cond_data, q_rad_data, Text, ci_Tomp, ci_Ttar)
+function [alpha_best, gamma_best] = fit_alpha_gamma(t_data, Tomp_interp, Ttar_interp, P_cond_interp, q_rad_data, Text, ci_T_omp, ci_T_tar, alpha_best, gamma_best)
+   % === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
+alphas = linspace(0.01, 100, 100);    
+gammas = linspace(0.01, 100, 100);    
  
-    % Costanti geometriche
-    C1 = 1000 * 0.014 * 3;
-    C2 = 3 * 3;
-    C3 = 3 * 3;
-    C4 = 9;
+min_err = inf;  % errore minimo iniziale
+k_B = 8.617e-5;  % costante di Boltzmann
  
-    % Interpolazioni dei dati
-    P_cond_fun = @(t) interp1(t_data, P_cond_data, t, 'linear', 'extrap');
-    q_rad_fun  = @(t) interp1(t_data, q_rad_data, t, 'linear', 'extrap');
+% Condizioni iniziali
+Tsol0 = (ci_T_omp + ci_T_tar) / 2;
+y0 = [ci_T_omp; Tsol0; ci_T_tar];
  
-    % Funzione errore da minimizzare (somme quadrati errori)
-    funzione_errore = @(params) compute_error(params, t_data, Tomp_data, Ttar_data, ...
-                                              P_cond_fun, q_rad_fun, Text, ...
-                                              ci_Tomp, ci_Ttar, C1, C2, C3, C4);
+for i = 1:length(alphas)
+    for j = 1:length(gammas)
+        alpha = alphas(i);
+        gamma = gammas(j);
  
-    % Valori iniziali di alpha e gamma
-    x0 = [0.1, 0.1];
+        % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
+        ode_fun = @(t, y) [
+            (y(2) - k_B * y(1)) * alpha + P_cond_fun(t) / C1 - q_rad_fun(t) / C2;
+            (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
+            (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
+        ];
  
-    % Ottimizzazione
-    best_params = fminsearch(funzione_errore, x0);
-    alpha_best = best_params(1);
-    gamma_best = best_params(2);
+        [~, y] = ode45(ode_fun, t_data, y0);
+ 
+        Tomp_sim = y(:,1);
+        Ttar_sim = y(:,3);
+ 
+        err = sum((Tomp_sim - Tomp_interp).^2) + sum((Ttar_sim - Ttar_interp).^2);
+ 
+        if err < min_err
+            min_err = err;
+            alpha_best = alpha;
+            gamma_best = gamma;
+            y_best = y;
+        end
+    end
 end
- 
-function err = compute_error(params, t_data, Tomp_data, Ttar_data, ...
-                             P_cond_fun, q_rad_fun, Text, ...
-                             ci_Tomp, ci_Ttar, C1, C2, C3, C4)
-    alpha = params(1);
-    gamma = params(2);
- 
-    % Condizioni iniziali: Tomp(0), Tsol(0) stimato come media, Ttar(0)
-    Tsol0 = (ci_Tomp + ci_Ttar) / 2;
-    y0 = [ci_Tomp; Tsol0; ci_Ttar];
- 
-    % Sistema dinamico
-    ode_fun = @(t, y) [
-        (y(2) - y(1)) * alpha + P_cond_fun(t) / C1 - q_rad_fun(t) / C2; % Tomp_dot
-        (y(1) - y(2)) * alpha + (y(3) - y(2)) * alpha - q_rad_fun(t) / C3; % Tsol_dot
-        (y(2) - y(3)) * alpha + (Text - y(3)) * gamma - q_rad_fun(t) / C4 % Ttar_dot
-    ];
- 
-    % Integrazione
-    [~, y] = ode45(ode_fun, t_data, y0);
- 
-    % Estrai Tomp e Ttar simulati
-    Tomp_sim = y(:,1);
-    Ttar_sim = y(:,3);
- 
-    % Errore come somma quadrati differenze
-    err = sum((Tomp_sim - Tomp_data).^2) + sum((Ttar_sim - Ttar_data).^2);
+
+fprintf('Migliori parametri:\n');
+fprintf('alpha    = %.3f\n', alpha_best);
+fprintf('gamma   = %.3f\n', gamma_best);
+
 end

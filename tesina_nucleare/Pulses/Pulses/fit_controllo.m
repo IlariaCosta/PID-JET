@@ -36,7 +36,6 @@ function [best_tau, best_E] = fit_controllo(sparo, indici)
     % Impurezze trascurate
     cz = 1;
     P_imp_data = cz * ne_data.^2 * 1e-34;
-    
      
     % === FIT DI TAUE ===
     taues = linspace(0.01, 0.5, 100);  % esplorazione
@@ -49,7 +48,7 @@ function [best_tau, best_E] = fit_controllo(sparo, indici)
     disp(['P_brem_data: ', num2str(any(isnan(P_brem_data)))]);
     disp(['P_imp_data: ', num2str(any(isnan(P_imp_data)))]);
     P_brem_data = fillmissing(P_brem_data, 'linear');
-P_imp_data  = fillmissing(P_imp_data, 'linear');
+    P_imp_data  = fillmissing(P_imp_data, 'linear');
 
 
      
@@ -76,16 +75,6 @@ P_imp_data  = fillmissing(P_imp_data, 'linear');
     % === RISULTATI ===
     fprintf('Miglior taue = %.4f s (errore %.4e)\n', best_tau, min_err);
      
-    % % === PLOT ===
-    % figure;
-    % plot(t, media_energia.Data, 'k--', 'DisplayName','Energia reale');
-    % hold on;
-    % plot(t, best_E, 'b', 'DisplayName','Energia simulata');
-    % xlabel('Tempo [s]');
-    % ylabel('Energia [J]');
-    % title(['Fit \tau_e per sparo (migliore: ', num2str(best_tau), ' s)']);
-    % legend;
-    % grid on;
 end
  
 % === EQUAZIONE DIFFERENZIALE ===

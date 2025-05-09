@@ -43,6 +43,15 @@ function [best_tau, best_E] = fit_controllo(sparo, indici)
     min_err = Inf;
     best_tau = 0;
     best_E = [];
+
+    disp('Check dimensione e NaN dei dati:');
+    disp(['Pnbi: ', num2str(any(isnan(Pnbi.Data)))]);
+    disp(['P_brem_data: ', num2str(any(isnan(P_brem_data)))]);
+    disp(['P_imp_data: ', num2str(any(isnan(P_imp_data)))]);
+    P_brem_data = fillmissing(P_brem_data, 'linear');
+P_imp_data  = fillmissing(P_imp_data, 'linear');
+
+
      
     for i = 1:length(taues)
         taue = taues(i);

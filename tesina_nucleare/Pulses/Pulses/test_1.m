@@ -9,7 +9,6 @@ load("pulse_bon.mat")
 %% deuterio
 
 perc_deu_div = 0.2 % percentuale di deuterio che va nel divertore dalla valavola di deuterio
-%tau_deu_div = 1/12 % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
 tau_deu_div = 1/12 % --> valore originale 1/12 -->
 
 A_deu_div = -1/tau_deu_div
@@ -250,16 +249,16 @@ Ein = 7.2*10^6; %energia iniziale [J] contenuta nel core E = (3/2)*ne_core*Tcore
 V = 30; % volume core in m^3 , abbiamo visto che il volume del Jet sono circa 100 m^3 ; solitamente
         % Volume core è circa il 30%
 
-Kbr = 1.69*(10^-4)
+Kbr = 1.69*(10^-4);
 
 
-ne_div = 15*10^19
-ne_omp = 3*10^19 
-L = 3 
-k0 = 1700
-Apar = 0.014
-ne_core = 10^20
-Zeff = 3.1
+ne_div = 15*10^19;
+ne_omp = 3*10^19;
+L = 3;
+k0 = 1700;
+Apar = 0.014;
+ne_core = 10^20;
+Zeff = 3.1;
 
 %%
 
@@ -269,11 +268,12 @@ for i=1:length(pulse_bon)
     
     figure(1)
     clf;
-    ax1=subplot(2,4,1)
+    ax1=subplot(2,4,1);
     plot(Data.t,Data.Ip)
-    title('Plasma current')
+    xlabel('Tempo', 'FontSize', 14);
+    title('Plasma current', 'FontSize', 14)
     grid on;
-    ax2=subplot(2,4,2)
+    ax2=subplot(2,4,2);
     grid on;
     hold off
     plot(Data.t,Data.PTOT)
@@ -281,56 +281,62 @@ for i=1:length(pulse_bon)
     hold on
     plot(Data.t,Data.Prad)
     legend(['P_in';'Prad'])
-    title('Power')
+    xlabel('Tempo', 'FontSize', 14);
+    title('Power','FontSize', 14)
     grid on;
-    ax3=subplot(2,4,3)
+    ax3=subplot(2,4,3);
     hold off
     plot(Data.t,Data.WDIA)
     grid on;
     hold on
      plot(Data.t,Data.WP)
-     title('Plasma Energy')
+     xlabel('Tempo', 'FontSize', 14);
+     title('Plasma Energy','FontSize', 14)
      grid on;
-     ax4=subplot(2,4,4)
+     ax4=subplot(2,4,4);
      grid on;
      try
-    hold off
-    plot(Data.t,Data.ZEFF)
-    grid on;
-    title('ZEFF')
+        hold off
+        plot(Data.t,Data.ZEFF)
+        grid on;
+        xlabel('Tempo', 'FontSize', 14);
+        title('ZEFF','FontSize', 14)
      catch
      end
-    ax5=subplot(2,4,5)
+    ax5=subplot(2,4,5);
     grid on;
     hold off
     plot(TS.T.t,TS.T.T(1,:));
     yyaxis right
     plot(TS.T.t,TS.T.T(56,:));     
     legend(["Core";"OMP"])
-    title('Temperature')
+    xlabel('Tempo', 'FontSize', 14);
+    title('Temperature','FontSize', 14)
     grid on;
-    ax6=subplot(2,4,6)
+    ax6=subplot(2,4,6);
     grid on;
     hold off
-    plot(TS.T.t,TS.N.T(1,:)); hold on
+    plot(TS.T.t,TS.N.T(1,:)); 
+    hold on
     grid on;
     plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
     grid on;
     plot(TS.T.t,TS.N.T(56,:));
     grid on;
     ylim([0 Inf])
-  
+    
     legend(["Core";"TAR";"OMP"])
-    title('Density')
-    ax7=subplot(2,4,7)
+    xlabel('Tempo', 'FontSize', 14);
+    title('Density','FontSize', 14)
+    ax7=subplot(2,4,7);
     grid on;
     hold off
     plot(Data.t,Data.D2);
     grid on;
     
-    if Error.NE==0 | Error.N2==0
+    if Error.NE==0 || Error.N2==0
     yyaxis right
-   
+    
     try
     plot(Data.t,Data.N2);
     grid on;
@@ -339,16 +345,18 @@ for i=1:length(pulse_bon)
     grid on;
     end
     end
-    title('Valves')
+    xlabel('Tempo', 'FontSize', 14);
+    title('Valves','FontSize', 14)
     
-    ax8=subplot(2,4,8)
+    ax8=subplot(2,4,8);
     hold off
     plot(Data.t,Data.Lan_TE);
     grid on;
-    title('T_{TAR}')
+    xlabel('Tempo', 'FontSize', 14);
+    title('T_{TAR}','FontSize', 14)
     
     sgtitle(num2str(shot))
-   linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
+    linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
     drawnow;
     pause()
 end
@@ -365,17 +373,17 @@ ci_tar = 2.6*10^19;
 ci_omp = 1*10^19;
 
 % tempo 43-46 s
-i1 = 3001;
-i2 = 6001;
+i1 = find(Data.t == 43);
+i2 = find(Data.t == 46);
 indici = [i1 i2];
 tempo_data = Data.t(i1:i2)';
-valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
+valvola = timeseries(Data.D2(i1:i2)', tempo_data); % deuterio immesso
 valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
 n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
 
-ii1 = 61;
-ii2 = 121;
+ii1 = find(startsWith(string(TS.N.t), '43'), 1);
+ii2 = find(startsWith(string(TS.N.t), '46'), 1);
 tempo_TS = TS.N.t(ii1:ii2)';
 n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
 n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
@@ -557,54 +565,6 @@ C2 = 3 * 3;
 C3 = 3 * 3;
 C4 = 9;
 
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
-alphas = linspace(0.01, 100, 100);    
-gammas = linspace(0.01, 100, 100);    
- 
-min_err = inf;  % errore minimo iniziale
-k_B = 8.617e-5;  % costante di Boltzmann
- 
-% Condizioni iniziali
-Tsol0 = (ci_T_omp + ci_T_tar) / 2;
-y0 = [ci_T_omp; Tsol0; ci_T_tar];
- 
-for i = 1:length(alphas)
-    for j = 1:length(gammas)
-        alpha = alphas(i);
-        gamma = gammas(j);
- 
-        % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
-        ode_fun = @(t, y) [
-            (y(2) - k_B * y(1)) * alpha + P_cond_interp(t) / C1 - q_rad_fun(t) / C2;
-            (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
-            (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
-        ];
- 
-        [~, y] = ode45(ode_fun, t_data, y0);
- 
-        Tomp_sim = y(:,1);
-        Ttar_sim = y(:,3);
- 
-        err = sum((Tomp_sim - Tomp_interp).^2) + sum((Ttar_sim - Ttar_interp).^2);
- 
-        if err < min_err
-            min_err = err;
-            alpha_best = alpha;
-            gamma_best = gamma;
-            y_best = y;
-        end
-    end
-end
-
-fprintf('Migliori parametri:\n');
-fprintf('alpha    = %.3f\n', alpha_best);
-fprintf('gamma   = %.3f\n', gamma_best);
-
-
-
-
 %% Sparo 2
 clc
 close all
@@ -640,52 +600,6 @@ C1 = 1000 * 0.014 * 3;
 C2 = 3 * 3;
 C3 = 3 * 3;
 C4 = 9;
-
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
-alphas = linspace(0.01, 100, 100);    
-gammas = linspace(0.01, 100, 100);    
- 
-min_err = inf;  % errore minimo iniziale
-k_B = 8.617e-5;  % costante di Boltzmann
- 
-% Condizioni iniziali
-Tsol0 = (ci_T_omp + ci_T_tar) / 2;
-y0 = [ci_T_omp; Tsol0; ci_T_tar];
- 
-for i = 1:length(alphas)
-    for j = 1:length(gammas)
-        alpha = alphas(i);
-        gamma = gammas(j);
- 
-        % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
-        ode_fun = @(t, y) [
-            (y(2) - k_B * y(1)) * alpha + P_cond_interp(t) / C1 - q_rad_fun(t) / C2;
-            (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
-            (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
-        ];
- 
-        [~, y] = ode45(ode_fun, t_data, y0);
- 
-        Tomp_sim = y(:,1);
-        Ttar_sim = y(:,3);
- 
-        err = sum((Tomp_sim - Tomp_interp).^2) + sum((Ttar_sim - Ttar_interp).^2);
- 
-        if err < min_err
-            min_err = err;
-            alpha_best = alpha;
-            gamma_best = gamma;
-            y_best = y;
-        end
-    end
-end
-
-fprintf('Migliori parametri:\n');
-fprintf('alpha    = %.3f\n', alpha_best);
-fprintf('gamma   = %.3f\n', gamma_best);
-
 
 
 %% Sparo 3
@@ -725,53 +639,7 @@ C3 = 3 * 3;
 C4 = 9;
 
 
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
-alphas = linspace(0.01, 100, 100);    
-gammas = linspace(0.01, 100, 100);    
- 
-min_err = inf;  % errore minimo iniziale
-k_B = 8.617e-5;  % costante di Boltzmann
- 
-% Condizioni iniziali
-Tsol0 = (ci_T_omp + ci_T_tar) / 2;
-y0 = [ci_T_omp; Tsol0; ci_T_tar]/(8.617*1e-5);
- 
-for i = 1:length(alphas)
-    for j = 1:length(gammas)
-        alpha = alphas(i);
-        gamma = gammas(j);
- 
-        % Sistema dinamico con retroazione modificata (Tomp, Ttar moltiplicati per k_B)
-        ode_fun = @(t, y) [
-            (y(2) - k_B * y(1)) * alpha + P_cond_interp(t) / C1 - q_rad_fun(t) / C2;
-            (k_B * y(1) - y(2)) * alpha + (k_B * y(3) - y(2)) * alpha - q_rad_fun(t) / C3;
-            (y(2) - k_B * y(3)) * alpha + (273 - k_B * y(3)) * gamma - q_rad_fun(t) / C4
-        ];
- 
-        [~, y] = ode45(ode_fun, t_data, y0);
- 
-        Tomp_sim = y(:,1);
-        Ttar_sim = y(:,3);
- 
-        err = sum((Tomp_sim - Tomp_interp).^2) + sum((Ttar_sim - Ttar_interp).^2);
- 
-        if err < min_err
-            min_err = err;
-            alpha_best = alpha;
-            gamma_best = gamma;
-            y_best = y;
-        end
-    end
-end
-
-fprintf('Migliori parametri:\n');
-fprintf('alpha    = %.3f\n', alpha_best);
-fprintf('gamma   = %.3f\n', gamma_best);
 
 
-
-%%
-save best_param_controllo.mat best_tau
  
 

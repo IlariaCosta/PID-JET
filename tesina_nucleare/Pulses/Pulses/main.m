@@ -269,97 +269,98 @@ for i=1:length(pulse_bon)
     figure(1)
     clf;
     ax1=subplot(2,4,1);
-    plot(Data.t,Data.Ip)
-    xlabel('Tempo', 'FontSize', 14);
-    title('Plasma current', 'FontSize', 14)
+    plot(Data.t,Data.Ip,'LineWidth', 2)
+    xlabel('Tempo', 'FontSize', 13);
+    title('Plasma current [A]', 'FontSize', 13)
     grid on;
     ax2=subplot(2,4,2);
     grid on;
     hold off
-    plot(Data.t,Data.PTOT)
+    plot(Data.t,Data.PTOT, 'LineWidth', 2)
     grid on;
     hold on
-    plot(Data.t,Data.Prad)
+    plot(Data.t,Data.Prad, 'LineWidth', 2)
     legend(['P_in';'Prad'])
-    xlabel('Tempo', 'FontSize', 14);
-    title('Power','FontSize', 14)
+    xlabel('Tempo', 'FontSize', 13);
+    title('Power [W]','FontSize', 13)
     grid on;
     ax3=subplot(2,4,3);
     hold off
-    plot(Data.t,Data.WDIA)
+    plot(Data.t,Data.WDIA,'LineWidth', 2)
     grid on;
     hold on;
-    plot(Data.t,Data.WP)
-     xlabel('Tempo', 'FontSize', 14);
-     title('Plasma Energy','FontSize', 14)
+    plot(Data.t,Data.WP,'LineWidth', 2)
+     xlabel('Tempo', 'FontSize', 13);
+     title('Plasma Energy [J]','FontSize', 13)
      grid on;
      ax4=subplot(2,4,4);
      grid on;
      try
         hold off
-        plot(Data.t,Data.ZEFF)
+        plot(Data.t,Data.ZEFF,'LineWidth', 2)
         grid on;
-        xlabel('Tempo', 'FontSize', 14);
-        title('ZEFF','FontSize', 14)
+        xlabel('Tempo', 'FontSize', 13);
+        title('ZEFF','FontSize', 13)
      catch
      end
     ax5=subplot(2,4,5);
     grid on;
     hold off
-    plot(TS.T.t,TS.T.T(1,:));
+    plot(TS.T.t,TS.T.T(1,:),'LineWidth', 2);
     yyaxis right
-    plot(TS.T.t,TS.T.T(56,:));     
+    plot(TS.T.t,TS.T.T(56,:),'LineWidth', 2);     
     legend(["Core";"OMP"])
-    xlabel('Tempo', 'FontSize', 14);
-    title('Temperature','FontSize', 14)
+    xlabel('Tempo', 'FontSize', 13);
+    title('Temperature [eV]','FontSize', 13)
     grid on;
     ax6=subplot(2,4,6);
     grid on;
     hold off
-    plot(TS.T.t,TS.N.T(1,:)); 
+    plot(TS.T.t,TS.N.T(1,:), 'LineWidth', 2); 
     hold on
     grid on;
-    plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t));
+    plot(TS.T.t,interp1(Data.t,Data.Lan_Ne,TS.T.t),'LineWidth', 2);
     grid on;
-    plot(TS.T.t,TS.N.T(56,:));
+    plot(TS.T.t,TS.N.T(56,:),'LineWidth', 2);
     grid on;
     ylim([0 Inf])
     
     legend(["Core";"TAR";"OMP"])
-    xlabel('Tempo', 'FontSize', 14);
-    title('Density','FontSize', 14)
+    xlabel('Tempo', 'FontSize', 13);
+    title('Density [n_{e}/m^{3}]','FontSize', 13)
     ax7=subplot(2,4,7);
     grid on;
     hold off
-    plot(Data.t,Data.D2);
+    plot(Data.t,Data.D2,'LineWidth', 2);
     grid on;
     
     if Error.NE==0 || Error.N2==0
     yyaxis right
     
     try
-        plot(Data.t,Data.N2);
+        plot(Data.t,Data.N2,'LineWidth', 2);
         grid on;
     catch
-    plot(Data.t,Data.NE);
+    plot(Data.t,Data.NE,'LineWidth', 2);
     grid on;
     end
     end
-    xlabel('Tempo', 'FontSize', 14);
-    title('Valves','FontSize', 14)
+    xlabel('Tempo', 'FontSize', 13);
+    title('Valves [Pa*m^{3}/s]','FontSize', 13)
     
     ax8=subplot(2,4,8);
     hold off
-    plot(Data.t,Data.Lan_TE);
+    plot(Data.t,Data.Lan_TE,'LineWidth', 2);
     grid on;
-    xlabel('Tempo', 'FontSize', 14);
-    title('T_{TAR}','FontSize', 14)
+    xlabel('Tempo', 'FontSize', 13);
+    title('T_{TAR} [eV]','FontSize', 13)
     
     sgtitle(num2str(shot))
     linkaxes([ax1,ax2,ax3,ax4,ax5,ax6,ax7,ax8],'x')
     drawnow;
     pause()
 end
+
 
 %% VETTORI
 %% 1. Sparo 94568
@@ -416,6 +417,37 @@ media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(
 media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
+%% FILTRI
+data = n_core_data.Data;          % i valori del segnale
+time = n_core_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 10;                % Taglio a un decimo di Fs (adatta a tuo caso)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+n_core_data_filt = timeseries(filtered_data, time);
+
+%%
+data = n_tar_data.Data;          % i valori del segnale
+time = n_tar_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 100;                % Taglio a un decimo di Fs 
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+n_tar_data_filt = timeseries(filtered_data, time);
 
 %% 2. Sparo 95502
 i = contains(name_l, '95502'); 
@@ -490,7 +522,7 @@ valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
 n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
 n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
 
-ii1 = find(startsWith(string(TS.N.t), '42'), 1);
+ii1 = find(startsWith(string(TS.N.t), '43'), 1);
 ii2 = find(startsWith(string(TS.N.t), '47'), 1);
 tempo_TS = TS.N.t(ii1:ii2)';
 n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core

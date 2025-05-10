@@ -8,9 +8,10 @@ function ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, ne_dat
     dt = t(2) - t(1);
  
     % Range PID da esplorare
-    Kp_vals = linspace(0.1, 5, 10);
-    Ki_vals = linspace(0, 2, 6);
-    Kd_vals = linspace(0, 1, 5);
+    Kp_vals = linspace(0.1, 50, 10);
+    Ki_vals = linspace(0, 20, 5);
+    Kd_vals = linspace(0, 10, );
+ 
  
     best_J = Inf;
     best_K = [0 0 0];
@@ -39,9 +40,16 @@ function J = simula_temp_PID(Kp, Ki, Kd, tau, temp_core_data, temp_omp_data, tem
     e_int = 0;
     e_prev = 0;
     y = zeros(size(t));
- 
+
     % Inizializzazione della variabile per l'energia
-    Pnbi = P_tot.Data;  % Energia da nbi, puoi cambiarla in base al tuo modello
+    % Interpolazione
+    P_cond = P_tot.Data;
+    tempo_cond = P_tot.Time;
+    P_cond_interp = interp1(tempo_cond, P_cond, t, 'linear', 'extrap');
+    T_tar_interp = interp1(temp_tar_data.Time, temp_tar_data.Data, t, 'linear', 'extrap');
+
+
+    Pnbi = P_cond_interp;  % Energia da nbi
     P_brem = zeros(size(t));  % Energia da brem, calcolata
     P_imp = zeros(size(t));  % Energia da imp, calcolata
  
@@ -49,7 +57,7 @@ function J = simula_temp_PID(Kp, Ki, Kd, tau, temp_core_data, temp_omp_data, tem
         % Trova l'indice più vicino per il tempo t(i)
         [~, idx_core] = min(abs(temp_core_data.Time - t(i)));
         [~, idx_omp] = min(abs(temp_omp_data.Time - t(i)));
-        [~, idx_tar] = min(abs(temp_tar_data.Time - t(i)));
+        T_tar_value = T_tar_interp(i);  % Utilizza il valore interpolato direttamente
         [~, idx_ne] = min(abs(ne_data.Time - t(i)));  % Densità elettronica
         [~, idx_Zeff] = min(abs(Zeff_data.Time - t(i)));  % Effettivo Z
  
@@ -60,7 +68,7 @@ function J = simula_temp_PID(Kp, Ki, Kd, tau, temp_core_data, temp_omp_data, tem
         % Confronta la temperatura simulata con i dati reali
         e_core = temp_core_data.Data(idx_core) - E(i-1);  % errore core
         e_omp = temp_omp_data.Data(idx_omp) - E(i-1);  % errore omp
-        e_tar = temp_tar_data.Data(idx_tar) - E(i-1);  % errore target
+        e_tar = T_tar_value - E(i-1);  % errore target
  
         % Calcola l'errore totale
         e = e_core + e_omp + e_tar;
@@ -72,13 +80,15 @@ function J = simula_temp_PID(Kp, Ki, Kd, tau, temp_core_data, temp_omp_data, tem
         S = Kp * e + Ki * e_int + Kd * e_der;
  
         % Modello dinamico: dE = -(1/tau) * E + Pnbi - P_brem - P_imp
-        E_dot = -(1/tau) * E(i-1) + Pnbi - P_brem(i) - P_imp(i);
+        E_dot = -(1/tau) * E(i-1) + Pnbi(i) - P_brem(i) - P_imp(i);
+        % fprintf("dimensioni E %d\tdimensioni E_dot %d \n", E, E_dot);
         E(i) = E(i-1) + E_dot * dt;  % Aggiorna l'energia
  
         y(i) = E(i);  % Salva il valore di output
         e_prev = e;  % Memorizza l'errore precedente
     end
  
+
     % Calcola la funzione costo in base all'errore
     ref = temp_core_data.Data(end);  % riferimento finale dal dato reale
     ess = abs(y(end) - ref);  % errore a regime

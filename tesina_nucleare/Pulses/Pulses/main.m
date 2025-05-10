@@ -8,78 +8,78 @@ load("pulse_bon.mat")
 
 %% deuterio
 
-perc_deu_div = 0.2 % percentuale di deuterio che va nel divertore dalla valavola di deuterio
-tau_deu_div = 1/12 % --> valore originale 1/12 -->
+perc_deu_div = 0.2; % percentuale di deuterio che va nel divertore dalla valavola di deuterio
+tau_deu_div = 1/12; % --> valore originale 1/12 -->
 
-A_deu_div = -1/tau_deu_div
-B_deu_div = perc_deu_div
-C_deu_div = 1 
-D_deu_div = 0
+A_deu_div = -1/tau_deu_div;
+B_deu_div = perc_deu_div;
+C_deu_div = 1; 
+D_deu_div = 0;
 
-perc_deu_core = 1-perc_deu_div % percentuale di deuterio che va nel divertore dalla valvola
+perc_deu_core = 1-perc_deu_div; % percentuale di deuterio che va nel divertore dalla valvola
 %tau_deu_core = 1/4 % tau del modello di pompaggio deuterio nel core
-tau_deu_core = 1/4 % --> valore originale 1/4 
+tau_deu_core = 1/4; % --> valore originale 1/4 
  
-A_deu_core = -1/tau_deu_core
-B_deu_core = perc_deu_core
-C_deu_core = 1 
-D_deu_core = 0
+A_deu_core = -1/tau_deu_core;
+B_deu_core = perc_deu_core;
+C_deu_core = 1; 
+D_deu_core = 0;
 
 %% azoto
 
-perc_azoto_div = 0.8 % percentuale di azoto che va nel divertore dalla valavola dell' azoto
-tau_azoto_div = 1/12 % --> valore originale 1/12 costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
-A_azoto_div = -1/tau_azoto_div
-B_azoto_div = perc_azoto_div
-C_azoto_div = 1 
-D_azoto_div = 0
+perc_azoto_div = 0.8; % percentuale di azoto che va nel divertore dalla valavola dell' azoto
+tau_azoto_div = 1/12; % --> valore originale 1/12 costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
+A_azoto_div = -1/tau_azoto_div;
+B_azoto_div = perc_azoto_div;
+C_azoto_div = 1; 
+D_azoto_div = 0;
 
-perc_azoto_core = 1-perc_azoto_div % percentuale di azoto che va nel core dalla valavola 
-tau_azoto_core = 1/4 % --> valore  originale 1/4 tau del modello di pompaggio al core valore originale di partenza: 1/4
-A_azoto_core = -1/tau_azoto_core
-B_azoto_core = perc_azoto_core
-C_azoto_core = 1 
-D_azoto_core = 0
+perc_azoto_core = 1-perc_azoto_div; % percentuale di azoto che va nel core dalla valavola 
+tau_azoto_core = 1/4; % --> valore  originale 1/4 tau del modello di pompaggio al core valore originale di partenza: 1/4
+A_azoto_core = -1/tau_azoto_core;
+B_azoto_core = perc_azoto_core;
+C_azoto_core = 1; 
+D_azoto_core = 0;
 
 
 
 %% azoto prova più lento
-perc_azoto_div = 0.8 % percentuale di azoto che va nel divertore dalla valavola dell' azoto
-tau_azoto_div_prova = 1/2 % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio
-A_azoto_div_prova = -1/tau_azoto_div_prova
-B_azoto_div = perc_azoto_div
-C_azoto_div = 1 
-D_azoto_div = 0
+perc_azoto_div = 0.8; % percentuale di azoto che va nel divertore dalla valavola dell' azoto
+tau_azoto_div_prova = 1/2; % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio
+A_azoto_div_prova = -1/tau_azoto_div_prova;
+B_azoto_div = perc_azoto_div;
+C_azoto_div = 1; 
+D_azoto_div = 0;
 
-perc_azoto_core = 1-perc_azoto_div % percentuale di azoto che va nel core dalla valavola di azoto
-tau_azoto_core_prova = 1/1 % tau del modello di pompaggio al core
-A_azoto_core_prova = -1/tau_azoto_core_prova
-B_azoto_core = perc_azoto_core
-C_azoto_core = 1 
-D_azoto_core = 0
+perc_azoto_core = 1-perc_azoto_div; % percentuale di azoto che va nel core dalla valavola di azoto
+tau_azoto_core_prova = 1/1; % tau del modello di pompaggio al core
+A_azoto_core_prova = -1/tau_azoto_core_prova;
+B_azoto_core = perc_azoto_core;
+C_azoto_core = 1; 
+D_azoto_core = 0;
 %% condizione iniziale 
-ne0_div = 10^18 %densità elettronica sul divertore iniziale 
-ne0_core = 10^18 %densità elettronica sul core iniziale
-ion = 7  % Azoto: 7 , Krypton: 36 %livello di ionizzazione delle impurezze 
-Te_tar = 2 % temperatura elettronica sul target
-Te_omp = 80 %temperatura elettronica outer midplane
-k0 = 1000
-Te_tar2 = 10 % temperatura elettronica sul target nella simulazione in cui la temperatura non rimane costante 
-Te_omp2 = 100 %temperatura elettronica outer midplane nella simulazione in cui la temperatura non rimane costante 
+ne0_div = 10^18; %densità elettronica sul divertore iniziale 
+ne0_core = 10^18; %densità elettronica sul core iniziale
+ion = 7;  % Azoto: 7 , Krypton: 36 %livello di ionizzazione delle impurezze 
+Te_tar = 2; % temperatura elettronica sul target
+Te_omp = 80; %temperatura elettronica outer midplane
+k0 = 1000;
+Te_tar2 = 10; % temperatura elettronica sul target nella simulazione in cui la temperatura non rimane costante 
+Te_omp2 = 100; %temperatura elettronica outer midplane nella simulazione in cui la temperatura non rimane costante 
 
 %% caso in cui non faccio distinzione tra core e divertore
 
-tau_deu = 1/3 % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
-A_deu_med = -1/tau_deu
+tau_deu = 1/3; % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
+A_deu_med = -1/tau_deu;
 B_deu_med = 1;
-C_deu_med = 1 
-D_deu_med = 0
+C_deu_med = 1; 
+D_deu_med = 0;
 
-tau_azoto = 1/3 % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
-A_azoto_med = -1/tau_azoto
-B_azoto_med = 1
-C_azoto_med = 1 
-D_azoto_med = 0
+tau_azoto = 1/3; % costante di tempo del sistema di pompaggio 1/polo del modello di pompaggio al divertore
+A_azoto_med = -1/tau_azoto;
+B_azoto_med = 1;
+C_azoto_med = 1; 
+D_azoto_med = 0;
 
 %% Lz di argon 
 
@@ -288,8 +288,8 @@ for i=1:length(pulse_bon)
     hold off
     plot(Data.t,Data.WDIA)
     grid on;
-    hold on
-     plot(Data.t,Data.WP)
+    hold on;
+    plot(Data.t,Data.WP)
      xlabel('Tempo', 'FontSize', 14);
      title('Plasma Energy','FontSize', 14)
      grid on;
@@ -338,8 +338,8 @@ for i=1:length(pulse_bon)
     yyaxis right
     
     try
-    plot(Data.t,Data.N2);
-    grid on;
+        plot(Data.t,Data.N2);
+        grid on;
     catch
     plot(Data.t,Data.NE);
     grid on;
@@ -480,8 +480,8 @@ ci_core = 1.49*10^19;
 ci_tar = 2.55*10^18;
 ci_omp = 8.02*10^18;
 
-% tempo 42-47
-i1 = find(Data.t == 42);
+% tempo 43-47
+i1 = find(Data.t == 43);
 i2 = find(Data.t == 47);
 indici = [i1 i2];
 tempo_data = Data.t(i1:i2)';

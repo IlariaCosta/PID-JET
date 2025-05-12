@@ -570,7 +570,6 @@ end
 [b, a] = butter(4, Wn);
 filtered_data = filtfilt(b, a, data);
 n_omp_data_filt = timeseries(filtered_data, time);
-
 %% 3. Sparo 95503
 i = contains(name_l, '95503'); 
 sparo_3 = name_l{i};

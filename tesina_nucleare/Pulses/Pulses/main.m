@@ -87,8 +87,6 @@ D_azoto_med = 0;
 Te_valuesArgon = [0, 1, 5, 8,11, 18, 21, 30, 46, 59, 72, 180, 200, 260,300,400, 700, 830, 1950, 3000, 6300, 10000];
 %Te_values = [0, 5, 11, 18, 21, 30, 46, 59, 72, 180, 200, 260,300,400, 700, 830, 1950, 3000, 6300, 10000];  % Valori di temperatura campione
 
-
-
 Lz_valuesArgon = [5e-35, 5e-35, 2.5e-32, 9e-32,1.95e-31, 1.8e-31, 1.8e-31, 6e-32, 6e-33, 3.8e-33, 6e-33, 7e-32, 6.5e-32, 4.2e-32, 2.5e-32, 1e-32,3.5e-33, 3.1e-33, 4.1e-33, 3e-33,1.8e-33, 1.4e-33];     % Valori di Lz corrispondenti
 %Lz_valuesArgon = [1e-34, 2.5e-32, 1.95e-31, 1.8e-31, 1.8e-31, 6e-32, 6e-33, 3.8e-33, 6e-33, 7e-32, 6.5e-32, 4.2e-32, 2.5e-32, 1e-32,3.5e-33, 3.1e-33, 4.1e-33, 3e-33,1.8e-33, 1.4e-33];
 
@@ -417,9 +415,9 @@ media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(
 media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
-%% FILTRI
+%% FILTRI DENSITA'
 
-% CORE
+% DENSITA' CORE
 data = n_core_data.Data;          % i valori del segnale
 time = n_core_data.Time;          % i tempi
 
@@ -435,7 +433,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_core_data_filt = timeseries(filtered_data, time);
 
-% TARGET
+% DENSITA' TARGET
 data = n_tar_data.Data;          % i valori del segnale
 time = n_tar_data.Time;          % i tempi
 
@@ -451,7 +449,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_tar_data_filt = timeseries(filtered_data, time);
 
-% OMP
+% DENSITA' OMP
 data = n_omp_data.Data;          % i valori del segnale
 time = n_omp_data.Time;          % i tempi
 
@@ -466,6 +464,74 @@ end
 [b, a] = butter(4, Wn);
 filtered_data = filtfilt(b, a, data);
 n_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRI TEMPERATURA
+
+% TEMPERATURA CORE
+data = temp_core_data.Data;          % i valori del segnale
+time = temp_core_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 100;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_core_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA TARGET
+data = temp_tar_data.Data;          % i valori del segnale
+time = temp_tar_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_tar_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA OMP
+data = temp_omp_data.Data;          % i valori del segnale
+time = temp_omp_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 40;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRO ENERGIA
+
+% ENERGIA
+data = media_energia.Data;          % i valori del segnale
+time = media_energia.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+media_energia_filt = timeseries(filtered_data, time);
 
 %% 2. Sparo 95502
 i = contains(name_l, '95502'); 
@@ -521,9 +587,9 @@ media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
 
-%% FILTRI
+%% FILTRI DENSITA'
 
-% CORE
+% DENSITA' CORE
 data = n_core_data.Data;          % i valori del segnale
 time = n_core_data.Time;          % i tempi
 
@@ -539,7 +605,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_core_data_filt = timeseries(filtered_data, time);
 
-% TARGET
+% DENSITA' TARGET
 data = n_tar_data.Data;          % i valori del segnale
 time = n_tar_data.Time;          % i tempi
 
@@ -555,7 +621,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_tar_data_filt = timeseries(filtered_data, time);
 
-% OMP
+% DENSITA' OMP
 data = n_omp_data.Data;          % i valori del segnale
 time = n_omp_data.Time;          % i tempi
 
@@ -570,6 +636,74 @@ end
 [b, a] = butter(4, Wn);
 filtered_data = filtfilt(b, a, data);
 n_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRI TEMPERATURA
+
+% TEMPERATURA CORE
+data = temp_core_data.Data;          % i valori del segnale
+time = temp_core_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 100;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_core_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA TARGET
+data = temp_tar_data.Data;          % i valori del segnale
+time = temp_tar_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_tar_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA OMP
+data = temp_omp_data.Data;          % i valori del segnale
+time = temp_omp_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 40;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRO ENERGIA
+
+% ENERGIA
+data = media_energia.Data;          % i valori del segnale
+time = media_energia.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+media_energia_filt = timeseries(filtered_data, time);
 
 %% 3. Sparo 95503
 i = contains(name_l, '95503'); 
@@ -625,9 +759,9 @@ media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(
 media_energia.Time = media_energia.Time - media_energia.Time(1);
 ci_energia = media_energia.Data(1);
 
-%% FILTRI
+%% FILTRI DENSITA'
 
-% CORE
+% DENSITA' CORE
 data = n_core_data.Data;          % i valori del segnale
 time = n_core_data.Time;          % i tempi
 
@@ -643,7 +777,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_core_data_filt = timeseries(filtered_data, time);
 
-% TARGET
+% DENSITA' TARGET
 data = n_tar_data.Data;          % i valori del segnale
 time = n_tar_data.Time;          % i tempi
 
@@ -659,7 +793,7 @@ end
 filtered_data = filtfilt(b, a, data);
 n_tar_data_filt = timeseries(filtered_data, time);
 
-% OMP
+% DENSITA' OMP
 data = n_omp_data.Data;          % i valori del segnale
 time = n_omp_data.Time;          % i tempi
 
@@ -674,6 +808,74 @@ end
 [b, a] = butter(4, Wn);
 filtered_data = filtfilt(b, a, data);
 n_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRI TEMPERATURA
+
+% TEMPERATURA CORE
+data = temp_core_data.Data;          % i valori del segnale
+time = temp_core_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 100;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_core_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA TARGET
+data = temp_tar_data.Data;          % i valori del segnale
+time = temp_tar_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_tar_data_filt = timeseries(filtered_data, time);
+
+% TEMPERATURA OMP
+data = temp_omp_data.Data;          % i valori del segnale
+time = temp_omp_data.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 40;               
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+temp_omp_data_filt = timeseries(filtered_data, time);
+
+%% FILTRO ENERGIA
+
+% ENERGIA
+data = media_energia.Data;          % i valori del segnale
+time = media_energia.Time;          % i tempi
+
+Fs = 1 / mean(diff(time));   % Frequenza di campionamento
+Fc = Fs / 600;                % (più è grande il denom maggiore è il filtraggio)
+Wn = Fc / (Fs/2);            % Frequenza normalizzata
+
+if Wn >= 1
+    error('Fc troppo alta rispetto a Fs. Riduci Fc oppure verifica il tempo.');
+end
+
+[b, a] = butter(4, Wn);
+filtered_data = filtfilt(b, a, data);
+media_energia_filt = timeseries(filtered_data, time);
 
 %% FITTING
 

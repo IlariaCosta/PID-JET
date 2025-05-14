@@ -4,12 +4,7 @@ function dati_sparo_2(name_l)
     i = contains(name_l, '95502'); 
     sparo_2 = name_l{i};
     load(sparo_2);
-    
-    % condizioni iniziali
-    ci_core = 1.95*10^19;
-    ci_tar = 1.85*10^19;
-    ci_omp = 0.95*10^19;
-    
+        
     i1 = find(Data.t == 43);
     i2 = find(Data.t == 46);
     indici = [i1 i2];
@@ -26,6 +21,11 @@ function dati_sparo_2(name_l)
     n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
     n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
     n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
+
+    % condizioni iniziali
+    ci_core = 1.95*10^19;
+    ci_tar = 2.8*10^19;
+    ci_omp = 0.95*10^19;
     
     % Potenza -> diagramma Controllo
     P_tot = timeseries(Data.PTOT(i1:i2)', tempo_data);
@@ -143,7 +143,7 @@ function dati_sparo_2(name_l)
     time = temp_omp_data.Time;          % i tempi
     
     Fs = 1 / mean(diff(time));   % Frequenza di campionamento
-    Fc = Fs / 40;               
+    Fc = Fs / 60;               
     Wn = Fc / (Fs/2);            % Frequenza normalizzata
     
     if Wn >= 1

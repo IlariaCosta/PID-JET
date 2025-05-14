@@ -185,7 +185,7 @@ for i=1:length(pulse_bon)
     clf;
     ax1=subplot(2,4,1);
     plot(Data.t,Data.Ip,'LineWidth', 2)
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('Plasma current [A]', 'FontSize', 13)
     grid on;
     ax2=subplot(2,4,2);
@@ -196,7 +196,7 @@ for i=1:length(pulse_bon)
     hold on
     plot(Data.t,Data.Prad, 'LineWidth', 2)
     legend(['P_in';'Prad'])
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('Power [W]','FontSize', 13)
     grid on;
     ax3=subplot(2,4,3);
@@ -205,7 +205,7 @@ for i=1:length(pulse_bon)
     grid on;
     hold on;
     plot(Data.t,Data.WP,'LineWidth', 2)
-     xlabel('Tempo', 'FontSize', 13);
+     xlabel('Tempo [s]', 'FontSize', 13);
      title('Plasma Energy [J]','FontSize', 13)
      grid on;
      ax4=subplot(2,4,4);
@@ -214,7 +214,7 @@ for i=1:length(pulse_bon)
         hold off
         plot(Data.t,Data.ZEFF,'LineWidth', 2)
         grid on;
-        xlabel('Tempo', 'FontSize', 13);
+        xlabel('Tempo [s]', 'FontSize', 13);
         title('ZEFF','FontSize', 13)
      catch
      end
@@ -225,7 +225,7 @@ for i=1:length(pulse_bon)
     yyaxis right
     plot(TS.T.t,TS.T.T(56,:),'LineWidth', 2);     
     legend(["Core";"OMP"])
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('Temperature [eV]','FontSize', 13)
     grid on;
     ax6=subplot(2,4,6);
@@ -241,7 +241,7 @@ for i=1:length(pulse_bon)
     ylim([0 Inf])
     
     legend(["Core";"TAR";"OMP"])
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('Density [n_{e}/m^{3}]','FontSize', 13)
     ax7=subplot(2,4,7);
     grid on;
@@ -260,14 +260,14 @@ for i=1:length(pulse_bon)
     grid on;
     end
     end
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('Valves [Pa*m^{3}/s]','FontSize', 13)
     
     ax8=subplot(2,4,8);
     hold off
     plot(Data.t,Data.Lan_TE,'LineWidth', 2);
     grid on;
-    xlabel('Tempo', 'FontSize', 13);
+    xlabel('Tempo [s]', 'FontSize', 13);
     title('T_{TAR} [eV]','FontSize', 13)
     
     sgtitle(num2str(shot))
@@ -285,8 +285,9 @@ end
 
 %% 1. Sparo 94568
 load param_sparo_1.mat
-clc
-ottimizza_PID(n_omp_data, n_core_data);
+% clc
+% ottimizza_PID(n_omp_data, n_core_data);
+% ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, n_core_data, P_tot, Z_eff);
 
 %% 2. Sparo 95502
 load param_sparo_2.mat

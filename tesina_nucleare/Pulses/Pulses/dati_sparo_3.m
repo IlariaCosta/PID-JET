@@ -47,7 +47,8 @@ function dati_sparo_3(name_l)
     % condizioni iniziali temperatura
     ci_T_core = temp_core_data.Data(1);
     ci_T_omp = temp_omp_data.Data(1);
-    ci_T_tar = temp_tar_data.Data(1);
+    % ci_T_tar = temp_tar_data.Data(1);
+    ci_T_tar = 7;
     
     % Energia
     media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
@@ -143,7 +144,7 @@ function dati_sparo_3(name_l)
     time = temp_omp_data.Time;          % i tempi
     
     Fs = 1 / mean(diff(time));   % Frequenza di campionamento
-    Fc = Fs / 40;               
+    Fc = Fs / 20;               
     Wn = Fc / (Fs/2);            % Frequenza normalizzata
     
     if Wn >= 1

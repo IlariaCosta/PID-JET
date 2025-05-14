@@ -1,25 +1,20 @@
 function ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, ne_data, P_tot, Zeff_data)
-    
-    % Costante cz e volume V
-    cz = 1.0;  % Aggiungi la costante appropriata
-    V = 80;  % Volume, modifica con il valore reale
-    % Parametri di tempo
-    t = temp_core_data.Time;  % Tempo del tuo timeseries
-    dt = t(2) - t(1);
- 
+
+    cz = 1.0;
+    V = 80;
+    t = temp_core_data.Time;
+
     % Range PID da esplorare
-    Kp_vals = linspace(10000, 80000, 70);
-    Ki_vals = linspace(50000, 200000, 30);
-    Kd_vals = linspace(1, 100, 20);
- 
- 
+    Kp_vals = linspace(0.1, 80000, 100);
+    Ki_vals = linspace(0.1, 200000, 60);
+    Kd_vals = linspace(0.1, 100, 20);
+
     best_J = Inf;
     best_K = [0 0 0];
- 
+
     for Kp = Kp_vals
         for Ki = Ki_vals
             for Kd = Kd_vals
-                % Chiama la funzione di simulazione per calcolare J
                 J = simula_temp_PID(Kp, Ki, Kd, 300, temp_core_data, temp_omp_data, temp_tar_data, ne_data, Zeff_data, cz, V, t, P_tot);
                 if J < best_J
                     best_J = J;
@@ -28,78 +23,62 @@ function ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, ne_dat
             end
         end
     end
- 
+
     fprintf('=== PID Ottimizzato per la Temperatura ===\n');
     fprintf('Kp = %.3f\nKi = %.3f\nKd = %.3f\nCosto J = %.4f\n', ...
         best_K(1), best_K(2), best_K(3), best_J);
 end
 
+
 function J = simula_temp_PID(Kp, Ki, Kd, tau, temp_core_data, temp_omp_data, temp_tar_data, ne_data, Zeff_data, cz, V, t, P_tot)
+
     dt = t(2) - t(1);
-    E = zeros(size(t));  % Energia
+    E = zeros(size(t));
     e_int = 0;
     e_prev = 0;
     y = zeros(size(t));
 
-    % Inizializzazione della variabile per l'energia
-    % Interpolazione
-    P_cond = P_tot.Data;
-    tempo_cond = P_tot.Time;
-    P_cond_interp = interp1(tempo_cond, P_cond, t, 'linear', 'extrap');
+    Pnbi = interp1(P_tot.Time, P_tot.Data, t, 'linear', 'extrap');
     T_tar_interp = interp1(temp_tar_data.Time, temp_tar_data.Data, t, 'linear', 'extrap');
 
+    ref = 1200;  % target di temperatura
 
-    Pnbi = P_cond_interp;  % Energia da nbi
-    P_brem = zeros(size(t));  % Energia da brem, calcolata
-    P_imp = zeros(size(t));  % Energia da imp, calcolata
- 
     for i = 2:length(t)
-        % Trova l'indice più vicino per il tempo t(i)
         [~, idx_core] = min(abs(temp_core_data.Time - t(i)));
         [~, idx_omp] = min(abs(temp_omp_data.Time - t(i)));
-        T_tar_value = T_tar_interp(i);  % Utilizza il valore interpolato direttamente
-        [~, idx_ne] = min(abs(ne_data.Time - t(i)));  % Densità elettronica
-        [~, idx_Zeff] = min(abs(Zeff_data.Time - t(i)));  % Effettivo Z
- 
-        % Calcola le potenze
-        P_brem(i) = (1.7e-38) * Zeff_data.Data(idx_Zeff)^2 * ne_data.Data(idx_ne)^2 * sqrt(temp_core_data.Data(idx_core)) * V;
-        P_imp(i) = cz * ne_data.Data(idx_ne)^2 * 1e-34;
- 
-        % Confronta la temperatura simulata con i dati reali
-        e_core = temp_core_data.Data(idx_core) - E(i-1);  % errore core
-        e_omp = temp_omp_data.Data(idx_omp) - E(i-1);  % errore omp
-        e_tar = T_tar_value - E(i-1);  % errore target
- 
-        % Calcola l'errore totale
-        e = e_core + e_omp + e_tar;
- 
-        e_int = e_int + e * dt;  % Aggiorna l'errore integrato
-        e_der = (e - e_prev) / dt;  % Derivata dell'errore
- 
-        % Calcola la risposta del PID
-        S = Kp * e + Ki * e_int + Kd * e_der;
- 
-        % Modello dinamico: dE = -(1/tau) * E + Pnbi - P_brem - P_imp
-        E_dot = -(1/tau) * E(i-1) + Pnbi(i) - P_brem(i) - P_imp(i);
-        % fprintf("dimensioni E %d\tdimensioni E_dot %d \n", E, E_dot);
-        E(i) = E(i-1) + E_dot * dt;  % Aggiorna l'energia
- 
-        y(i) = E(i);  % Salva il valore di output
-        e_prev = e;  % Memorizza l'errore precedente
-    end
- 
+        [~, idx_ne] = min(abs(ne_data.Time - t(i)));
+        [~, idx_Zeff] = min(abs(Zeff_data.Time - t(i)));
 
-    % Calcola la funzione costo in base all'errore
-    ref = temp_core_data.Data(end);  % riferimento finale dal dato reale
-    ess = abs(y(end) - ref);  % errore a regime
-    overshoot = max(0, (max(y) - ref) * 100);
-    idx_Ts = find(abs(y - ref) > 0.05 * ref, 1, 'last');
-    if ~isempty(idx_Ts)
-        Ts = t(idx_Ts);
-    else
-        Ts = 0;
+        T_core = temp_core_data.Data(idx_core);
+        T_omp = temp_omp_data.Data(idx_omp);
+        T_tar = T_tar_interp(i);
+        ne_val = ne_data.Data(idx_ne);
+        Zeff_val = Zeff_data.Data(idx_Zeff);
+
+        P_brem = 1.7e-38 * Zeff_val^2 * ne_val^2 * sqrt(T_core) * V;
+        P_imp = cz * ne_val^2 * 1e-34;
+
+        % PID su errore rispetto al riferimento
+        e = ref - E(i-1);
+        e_int = e_int + e * dt;
+        e_der = (e - e_prev) / dt;
+        S = Kp * e + Ki * e_int + Kd * e_der;
+
+        % Dinamica
+        E_dot = -(1/tau) * E(i-1) + S + Pnbi(i) - P_brem - P_imp;
+        E(i) = E(i-1) + E_dot * dt;
+        y(i) = E(i);
+        e_prev = e;
     end
- 
-    % Funzione di costo J (basata su overshoot, Ts e errore a regime)
+
+    % Funzione di costo
+    ess = abs(y(end) - ref);
+    overshoot = max(0, (max(y) - ref) * 100 / ref);
+    idx_Ts = find(abs(y - ref) > 0.05 * ref, 1, 'last');
+    Ts = t(idx_Ts); 
+    if ~isempty(idx_Ts) 
+    else 0;
+    end
+
     J = 1 * overshoot + 1 * Ts + 10 * ess;
 end

@@ -1,0 +1,112 @@
+%% 
+clc
+close all 
+clear all 
+load("pulse_lan")
+%%
+
+for i=1:length(pulse_lan)
+ 
+    load(pulse_lan{1,i});
+    SAN = 0;
+    SAT = 0;
+    j = 0
+    for i = 1:32
+        fieldName = sprintf('S%dA', i);         
+        flag = Error.(fieldName){1,1}; 
+        flag1 = Error.(fieldName){1,2}
+        
+        % Ora puoi controllare il flag come vuoi
+        if flag == 0 && flag1 ==0
+            j = j+1
+            fprintf('Flag %s attivo.\n', fieldName);
+            SAT = SAT + Data.(fieldName){1,1};
+            SAN = SAN + Data.(fieldName){1,2};
+        end
+
+    end
+    SAT = SAT/j;
+    SAN = SAN/j;
+    
+
+    
+    figure(1)
+    clf;
+    ax(1)=subplot(2,4,1)
+    hold on 
+    plot(Data.t,Data.Ip)
+    yyaxis right
+    plot(Data.t, Data.BeOuter)
+    hold off
+    title('Plasma current')
+
+    ax(2)=subplot(2,4,2)
+    hold off
+    plot(Data.t,Data.PTOT)
+    hold on
+    plot(Data.t,Data.Prad)
+    legend(['P_in';'Prad'])
+    title('Power')
+
+    ax(3)=subplot(2,4,3)
+    hold off
+    plot(Data.t,Data.WDIA)
+    hold on
+     plot(Data.t,Data.WP)
+     title('Plasma Energy')
+
+     ax(4)=subplot(2,4,4)
+     try
+    hold off
+    plot(Data.t,Data.ZEFF)
+    title('ZEFF')
+     catch
+     end
+
+    ax(5)=subplot(2,4,5)
+    hold off
+    plot(TS.T.t,TS.T.T(1,:));
+    yyaxis right
+    plot(TS.T.t,TS.T.T(56,:));     
+    legend(["Core";"OMP"])
+    title('Temperature')
+
+    ax(6)=subplot(2,4,6)
+    hold off
+    plot(TS.T.t,TS.N.T(1,:)); hold on
+     plot(TS.T.t,interp1(Data.t,SAN,TS.T.t));
+
+    plot(TS.T.t,TS.N.T(56,:));
+    ylim([0 Inf])
+
+    legend(["Core";"TAR";"OMP"])
+    title('Density')
+
+    ax(7)=subplot(2,4,7)
+    hold off
+    plot(Data.t,Data.D2);
+    
+    if Error.NE==0 | Error.N2==0
+    yyaxis right
+   
+    try
+    plot(Data.t,Data.N2);
+    catch
+    plot(Data.t,Data.NE);
+
+    end
+    end
+    title('Valves')
+
+    
+    ax(8)=subplot(2,4,8)
+    hold off
+    plot(Data.t,SAT);
+    title('T_{TAR}')
+
+    sgtitle(num2str(shot))
+    linkaxes(ax,'x')
+    drawnow;
+    pause()
+
+end 

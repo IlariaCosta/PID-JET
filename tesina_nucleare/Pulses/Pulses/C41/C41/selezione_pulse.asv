@@ -28,33 +28,19 @@ end
 
 %% Calcolo Lan_Ne e Lan_TE
 % Allunga o riduce i segnali per adattarli a Data.t
-len = 14416;  % Lunghezza comune desiderata
- 
-% Interpolazione a lunghezza fissa = 14416
-S15 = interp1(1:length(Data.S15A{1}), Data.S15A{1}, linspace(1,length(Data.S15A{1}),len), 'linear', 'extrap')';
-S16 = interp1(1:length(Data.S16A{1}), Data.S16A{1}, linspace(1,length(Data.S16A{1}),len), 'linear', 'extrap')';
-S19 = interp1(1:length(Data.S19A{1}), Data.S19A{1}, linspace(1,length(Data.S19A{1}),len), 'linear', 'extrap')';
-S30 = interp1(1:length(Data.S30A{1}), Data.S30A{1}, linspace(1,length(Data.S30A{1}),len), 'linear', 'extrap')';
-S31 = interp1(1:length(Data.S31A{1}), Data.S31A{1}, linspace(1,length(Data.S31A{1}),len), 'linear', 'extrap')';
- 
-% Calcolo media vettoriale (colonna)
-Lan_Ne = (S15 + S16 + S19 + S30 + S31) / 5;
- 
-% Tempo coerente
-Data_t = linspace(min(Data.t), max(Data.t), len)';  % Ricampionato coerente
-TS_t = TS.T.t(:);
- 
-%% Lan_TE
-% Interpolazione dei secondi vettori (Temperatura elettronica)
-T15 = interp1(1:length(Data.S15A{2}), Data.S15A{2}, linspace(1,length(Data.S15A{2}),len), 'linear', 'extrap')';
-T16 = interp1(1:length(Data.S16A{2}), Data.S16A{2}, linspace(1,length(Data.S16A{2}),len), 'linear', 'extrap')';
-T19 = interp1(1:length(Data.S19A{2}), Data.S19A{2}, linspace(1,length(Data.S19A{2}),len), 'linear', 'extrap')';
-T30 = interp1(1:length(Data.S30A{2}), Data.S30A{2}, linspace(1,length(Data.S30A{2}),len), 'linear', 'extrap')';
-T31 = interp1(1:length(Data.S31A{2}), Data.S31A{2}, linspace(1,length(Data.S31A{2}),len), 'linear', 'extrap')';
- 
-% Calcolo media temperatura elettronica
-Lan_TE = (T15 + T16 + T19 + T30 + T31) / 5;
-Data_te = linspace(min(Data.t), max(Data.t), len)';  % Ricampionato coerente
+len = length(Data.t);
+S15 = interp1(1:length(Data.S15A{1}), Data.S15A{1}, linspace(1,length(Data.S15A{1}),len));
+S16 = interp1(1:length(Data.S16A{1}), Data.S16A{1}, linspace(1,length(Data.S16A{1}),len));
+S19 = interp1(1:length(Data.S19A{1}), Data.S19A{1}, linspace(1,length(Data.S19A{1}),len));
+S30 = interp1(1:length(Data.S30A{1}), Data.S30A{1}, linspace(1,length(Data.S30A{1}),len));
+S31 = interp1(1:length(Data.S31A{1}), Data.S31A{1}, linspace(1,length(Data.S31A{1}),len));
+
+Lan_Ne = (S15{} + S16 + S19 + S30 + S31)/5;
+% Lan_Ne = (Data.S15A{1,:} + Data.S16A{1,:} + Data.S19A{1,:} + Data.S30A{1,:} + Data.S31A{1,:}) /5;
+fprintf("dimensioni Lan_Ne %d\ndimensioni tempo Lan_Ne %d\n", size(Lan_Ne), size(Data.t));
+% Lan_Ne = timeseries(Lan_Ne.Data(i1:i2)', tempo_data);
+
+% Lan_TE = (Data.S15A{2} + Data.S16A{2} + Data.S19A{2} + Data.S30A{2} + Data.S31A{2}) /5;
 
 %%
 for i=1:length(pulse_lan)
@@ -115,8 +101,8 @@ for i=1:length(pulse_lan)
     plot(TS.T.t,TS.N.T(1,:), 'LineWidth', 2); 
     hold on
     grid on;
-    % fprintf("dimensioni Lan_Ne %d\ndimensioni tempo Lan_Ne %d\ndimensioni TS %d\n", size(Lan_Ne), size(Data.t), size(TS.T.t));
-    plot(TS.T.t,interp1(Data_t,Lan_Ne,TS.T.t),'LineWidth', 2);
+    fprintf("dimensioni Lan_Ne %d\ndimensioni tempo Lan_Ne %d\ndimensioni TS %d\n", size(Lan_Ne), size(Data.t), size(TS.T.t));
+    plot(TS.T.t,interp1(Data.t,Lan_Ne,TS.T.t),'LineWidth', 2);
     grid on;
     plot(TS.T.t,TS.N.T(56,:),'LineWidth', 2);
     grid on;
@@ -147,7 +133,7 @@ for i=1:length(pulse_lan)
     
     ax8=subplot(2,4,8);
     hold off
-    plot(Data_t,Lan_TE,'LineWidth', 2);
+    plot(Data.t,Lan_TE,'LineWidth', 2);
     grid on;
     xlabel('Tempo [s]', 'FontSize', 13);
     title('T_{TAR} [eV]','FontSize', 13)

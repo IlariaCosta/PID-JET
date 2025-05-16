@@ -28,7 +28,7 @@ function fit_impurezze(name_l)
 
     % Parametri da esplorare
     taus = linspace(0.1, 1000, 50);
-    tau1s = linspace(100, 1000, 50);
+    tau1s = linspace(0.1, 1000, 50);
     S_vals = linspace(0.1, 0.9, 10);
 
     min_err = Inf;

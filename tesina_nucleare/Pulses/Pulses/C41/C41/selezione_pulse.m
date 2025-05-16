@@ -175,7 +175,7 @@ for i =1:length(nomiFile)
 end 
 
 %% DATI SPARI ANALIZZATI
-
+clc
 impurezze_sparo_1(pulse_lan, Lan_Ne, Lan_TE);
 % dati_sparo_2(name_l);
 % dati_sparo_3(name_l);

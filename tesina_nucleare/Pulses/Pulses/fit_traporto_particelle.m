@@ -18,7 +18,7 @@ function fit_traporto_particelle(sparo, cond_in)
     tempo_data = Data.t(i1:i2)';
     tempo_data = tempo_data - tempo_data(1);
      
-    % Dati reali (interpolati)
+    % Dati reali 
     n_tar_data_raw = Data.Lan_Ne(i1:i2)';
     n_omp_data_raw = TS.N.T(56,61:121)';
     n_core_data_raw = TS.N.T(1,61:121)';

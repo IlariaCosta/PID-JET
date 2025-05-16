@@ -1,6 +1,11 @@
 clc 
 clear all 
 close all 
+
+%% Caricamento dati per simulink
+% dati_config();
+load dati_conf.mat;
+
 %%
 cartella = "C:\Users\costa\Documents\GitHub\PID-JET\tesina_nucleare\Pulses\Pulses\C41\C41"
 files = dir(fullfile(cartella,'*.mat*'))
@@ -38,7 +43,7 @@ S30 = interp1(1:length(Data.S30A{1}), Data.S30A{1}, linspace(1,length(Data.S30A{
 S31 = interp1(1:length(Data.S31A{1}), Data.S31A{1}, linspace(1,length(Data.S31A{1}),len), 'linear', 'extrap')';
  
 % Calcolo media vettoriale (colonna)
-Lan_Ne = (S15 + S16 + S19 + S30 + S31) / 5;
+Lan_TE = (S15 + S16 + S19 + S30 + S31) / 5;
  
 % Tempo coerente
 Data_t = linspace(min(Data.t), max(Data.t), len)';  % Ricampionato coerente
@@ -53,7 +58,7 @@ T30 = interp1(1:length(Data.S30A{2}), Data.S30A{2}, linspace(1,length(Data.S30A{
 T31 = interp1(1:length(Data.S31A{2}), Data.S31A{2}, linspace(1,length(Data.S31A{2}),len), 'linear', 'extrap')';
  
 % Calcolo media temperatura elettronica
-Lan_TE = (T15 + T16 + T19 + T30 + T31) / 5;
+Lan_Ne = (T15 + T16 + T19 + T30 + T31) / 5;
 Data_te = linspace(min(Data.t), max(Data.t), len)';  % Ricampionato coerente
 
 %%
@@ -143,7 +148,7 @@ for i=1:length(pulse_lan)
     end
     end
     xlabel('Tempo [s]', 'FontSize', 13);
-    title('Valves [n_{e}/s]','FontSize', 13)
+    title('Valves [n_{e}/m^{3}]','FontSize', 13)
     
     ax8=subplot(2,4,8);
     hold off
@@ -169,6 +174,16 @@ for i =1:length(nomiFile)
 
 end 
 
-save("C:\Users\feder\Desktop\Lavoro Borsa\controllo temperature\codici miei\pulse_impurezze.mat","pulse_impurezze");
-save("C:\Users\feder\Desktop\Lavoro Borsa\controllo temperature\codici miei\nomiFile.mat", "nomiFile")
-save("C:\Users\feder\Desktop\Lavoro Borsa\controllo temperature\codici miei\pulse_lan.mat", "pulse_lan")
+%% DATI SPARI ANALIZZATI
+
+impurezze_sparo_1(pulse_lan, Lan_Ne, Lan_TE);
+% dati_sparo_2(name_l);
+% dati_sparo_3(name_l);
+
+%% 1. Sparo 99432
+load param_impurezze_sparo_1.mat
+clc
+fit_impurezze('param_impurezze_sparo_1.mat');
+
+
+

@@ -143,7 +143,7 @@ function dati_sparo_2(name_l)
     time = temp_omp_data.Time;          % i tempi
     
     Fs = 1 / mean(diff(time));   % Frequenza di campionamento
-    Fc = Fs / 60;               
+    Fc = Fs / 30;               
     Wn = Fc / (Fs/2);            % Frequenza normalizzata
     
     if Wn >= 1

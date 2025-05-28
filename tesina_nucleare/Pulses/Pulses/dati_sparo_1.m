@@ -48,6 +48,9 @@ function dati_sparo_1(name_l)
     ci_T_core = 1300;
     ci_T_omp = 59;
     ci_T_tar = 6.6;
+    % ci_T_core = temp_core_data.Data(1);
+    % ci_T_omp = temp_omp_data.Data(1);
+    % ci_T_tar = temp_tar_data.Data(1);
     
     % Energia
     media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;

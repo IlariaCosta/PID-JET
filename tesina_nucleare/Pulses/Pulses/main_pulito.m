@@ -120,9 +120,9 @@ set(lgd, 'FontSize', 14);
 
 %% DATI SPARI ANALIZZATI
 
-% dati_sparo_1(name_l);
+dati_sparo_1(name_l);
 % dati_sparo_2(name_l);
-dati_sparo_3(name_l);
+% dati_sparo_3(name_l);
 
 %% 1. Sparo 94568
 load param_sparo_1.mat

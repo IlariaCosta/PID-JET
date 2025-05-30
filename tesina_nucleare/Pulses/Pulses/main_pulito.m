@@ -112,7 +112,25 @@ end
 
 %% IMPOSTAZIONI SCOPE
 clc
-fig = gcf;              % Ottiene la figura corrente
+fig = figure(2);              % Ottiene la figura corrente
+axs = findall(fig, 'Type', 'axes'); 
+set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'FontSize', 14);
+
+fig = figure(3);              % Ottiene la figura corrente
+axs = findall(fig, 'Type', 'axes'); 
+set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'FontSize', 14);
+
+fig = figure(4);              % Ottiene la figura corrente
+axs = findall(fig, 'Type', 'axes'); 
+set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'FontSize', 14);
+
+fig = figure(1);              % Ottiene la figura corrente
 axs = findall(fig, 'Type', 'axes'); 
 set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
 lgd = findall(fig, 'Type', 'Legend');
@@ -120,9 +138,9 @@ set(lgd, 'FontSize', 14);
 
 %% DATI SPARI ANALIZZATI
 
-dati_sparo_1(name_l);
+% dati_sparo_1(name_l);
 % dati_sparo_2(name_l);
-% dati_sparo_3(name_l);
+dati_sparo_3(name_l);
 
 %% 1. Sparo 94568
 load param_sparo_1.mat

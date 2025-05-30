@@ -1,32 +1,31 @@
-function dati_sparo_1(name_l)
+function impurezze_sparo_3(name_l, Lan_Ne, Lan_TE)
 
-    %% 1. Sparo 94568
-    i = contains(name_l, '94568');  % trova l'indice del nome che contiene '94568'
+    %% 1. Sparo 99470 
+    i = contains(name_l, '99470'); 
     sparo_1 = name_l{i};
     load(sparo_1);
-    
-    % condizioni iniziali densità
-    ci_core = 2.05*10^19;
-    ci_tar = 2.6*10^19;
-    ci_omp = 1*10^19;
-    
-    % tempo 43-46 s
-    i1 = find(Data.t == 43);
-    i2 = find(Data.t == 46);
+        
+    i1 = find(Data.t == 48);
+    i2 = find(Data.t == 53);
     indici = [i1 i2];
     tempo_data = Data.t(i1:i2)';
-    valvola = timeseries(Data.D2(i1:i2)', tempo_data); % deuterio immesso
+    valvola = timeseries(Data.D2(i1:i2)', tempo_data); % formato per simulink
     valvola.Time = valvola.Time - valvola.Time(1);  % ora parte da 0 s
-    n_tar_data = timeseries(Data.Lan_Ne(i1:i2)', tempo_data); % densità vera omp
+    n_tar_data = timeseries(Lan_Ne(i1:i2), tempo_data); % densità vera omp
     n_tar_data.Time = n_tar_data.Time - n_tar_data.Time(1);  % ora parte da 0 s
     
-    ii1 = find(startsWith(string(TS.N.t), '43'), 1);
-    ii2 = find(startsWith(string(TS.N.t), '46'), 1);
+    ii1 = find(startsWith(string(TS.N.t), '48'), 1);
+    ii2 = find(startsWith(string(TS.N.t), '53'), 1);
     tempo_TS = TS.N.t(ii1:ii2)';
     n_core_data = timeseries(TS.N.T(1,ii1:ii2)', tempo_TS); % densità vera core
     n_core_data.Time = n_core_data.Time - n_core_data.Time(1);  % ora parte da 0 s
     n_omp_data = timeseries(TS.N.T(56,ii1:ii2)', tempo_TS); % densità vera omp
     n_omp_data.Time = n_omp_data.Time - n_omp_data.Time(1);  % ora parte da 0 s
+
+    % condizioni iniziali
+    ci_core = n_core_data.Data(1);
+    ci_tar = n_tar_data.Data(1);
+    ci_omp = n_omp_data.Data(1);
     
     % Potenza -> diagramma Controllo
     P_tot = timeseries(Data.PTOT(i1:i2)', tempo_data);
@@ -41,21 +40,19 @@ function dati_sparo_1(name_l)
     temp_core_data.Time = temp_core_data.Time - temp_core_data.Time(1);
     temp_omp_data = timeseries(TS.T.T(56,ii1:ii2)', tempo_TS);
     temp_omp_data.Time = temp_omp_data.Time - temp_omp_data.Time(1);
-    temp_tar_data = timeseries(Data.Lan_TE(i1:i2)', tempo_data); 
+    temp_tar_data = timeseries(Lan_TE(i1:i2), tempo_data); 
     temp_tar_data.Time = temp_tar_data.Time - temp_tar_data.Time(1);
     
     % condizioni iniziali temperatura
-    ci_T_core = 1300;
-    ci_T_omp = 59;
-    ci_T_tar = 6.6;
-    % ci_T_core = temp_core_data.Data(1);
-    % ci_T_omp = temp_omp_data.Data(1);
-    % ci_T_tar = temp_tar_data.Data(1);
+    ci_T_core = temp_core_data.Data(1);
+    ci_T_omp = temp_omp_data.Data(1);
+    ci_T_tar = temp_tar_data.Data(1);
     
     % Energia
     media_energia = (timeseries(Data.WP(i1:i2)', tempo_data) + timeseries(Data.WDIA(i1:i2)', tempo_data))/2;
     media_energia.Time = media_energia.Time - media_energia.Time(1);
     ci_energia = media_energia.Data(1);
+    
     
     %% FILTRI DENSITA'
     
@@ -146,7 +143,7 @@ function dati_sparo_1(name_l)
     time = temp_omp_data.Time;          % i tempi
     
     Fs = 1 / mean(diff(time));   % Frequenza di campionamento
-    Fc = Fs / 7;               
+    Fc = Fs / 20;               
     Wn = Fc / (Fs/2);            % Frequenza normalizzata
     
     if Wn >= 1
@@ -175,10 +172,12 @@ function dati_sparo_1(name_l)
     filtered_data = filtfilt(b, a, data);
     media_energia_filt = timeseries(filtered_data, time);
 
-    save param_sparo_1 ci_core ci_tar ci_omp ci_T_core ci_T_tar ci_T_omp ci_energia ...
+
+    save param_impurezze_sparo_3 ci_core ci_tar ci_omp ci_T_core ci_T_tar ci_T_omp ci_energia ...
         n_core_data n_omp_data n_tar_data ...
-        temp_omp_data temp_core_data temp_tar_data ...
-        media_energia media_energia_filt n_core_data_filt n_omp_data_filt n_tar_data_filt ...
+        media_energia ...
+        media_energia_filt n_core_data_filt n_omp_data_filt n_tar_data_filt ...
         temp_core_data_filt temp_omp_data_filt temp_tar_data_filt ...
-        indici valvola P_tot Z_eff
+        temp_omp_data temp_core_data temp_tar_data ...
+        indici valvola P_tot Z_eff tempo_data
 end

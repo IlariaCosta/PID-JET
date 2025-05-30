@@ -5,9 +5,9 @@ function ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, ne_dat
     t = temp_core_data.Time;
 
     % Range PID da esplorare
-    Kp_vals = linspace(0.1, 80000, 100);
-    Ki_vals = linspace(0.1, 200000, 60);
-    Kd_vals = linspace(0.1, 100, 20);
+    Kp_vals = linspace(0.01, 80000, 300);
+    Ki_vals = linspace(0.01, 200000, 100);
+    Kd_vals = linspace(0.01, 100, 50);
 
     best_J = Inf;
     best_K = [0 0 0];

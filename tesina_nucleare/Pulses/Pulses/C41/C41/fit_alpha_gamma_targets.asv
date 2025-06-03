@@ -1,0 +1,75 @@
+function [alpha_best, gamma_best, y_best] = fit_alpha_gamma_targets(t_data, Tomp_data, Ttar_data, P_cond, q_rad)
+    % INPUT:
+    % t_data      : vettore tempi (s)
+    % Tomp_data   : temperatura Tomp misurata (K)
+    % Ttar_data   : temperatura Ttar misurata (K)
+    % P_cond_fun  : funzione handle potenza di conduzione (funzione di t)
+    % q_rad_fun   : funzione handle potenza radiazione (funzione di t)
+    % Text        : temperatura esterna Text (K), costante o funzione handle
+    
+    P_cond_fun = @(t) interp1(P_cond.Time, P_cond.Data, t, 'linear', 'extrap');
+    q_rad_fun  = @(t) interp1(q_rad.Time,  q_rad.Data,  t, 'linear', 'extrap');
+    Tomp_data_fun = @(t) interp1(Tomp_data.Time, Tomp_data.Data, t, 'linear', 'extrap');
+Ttar_data_fun = @(t) interp1(Ttar_data.Time, Ttar_data.Data, t, 'linear', 'extrap');
+
+
+    % COSTANTI E RANGE DI RICERCA
+    alphas = logspace(-2, 1, 30);  % da 0.01 a 10 (maggiore risoluzione su scala log)
+    gammas = logspace(0, 2, 30);   % da 1 a 100
+    
+    Text = 273;
+
+    y0 = [Tomp_data(1); (Tomp_data(1)+Ttar_data(1))/2; Ttar_data(1)];  % condizioni iniziali [Tomp; Tsol; Ttar]
+    
+    min_err = inf;
+    
+    % Pre-allocazioni
+    n_alpha = length(alphas);
+    n_gamma = length(gammas);
+    
+    % Per evitare overhead dentro il ciclo: prepara vettori output (opzionale)
+    % ma in questo caso non necessario, meglio fermarsi appena si trova un errore più basso
+    
+    opts = odeset('RelTol',1e-4,'AbsTol',1e-6); % opzioni solver più aggressive
+    
+    for i = 1:n_alpha
+        alpha = alphas(i);
+        for j = 1:n_gamma
+            gamma = gammas(j);
+            
+            % Definisci il sistema ODE vettoriale con parametri fissati
+            ode_fun = @(t,y) [
+                (y(2) - y(1))*alpha + P_cond_fun(t)/(1000*0.014*3) - q_rad_fun(t)/(3*3);
+                (y(1) - y(2))*alpha + (y(3) - y(2))*alpha - q_rad_fun(t)/(3*3);
+                (y(2) - y(3))*alpha + (Text - y(3))*gamma - q_rad_fun(t)/9
+            ];
+            
+            % Integrazione ODE
+            [~, y_sim] = ode15s(ode_fun, t_data, y0, opts);
+            
+            Tomp_sim = y_sim(:,1);
+            Ttar_sim = y_sim(:,3);
+            
+            % Errore (squared error) sui dati reali in kelvin
+            err = sum((Tomp_sim - Tomp_data).^2) + sum((Ttar_sim - Ttar_data).^2);
+            
+            if err < min_err
+                min_err = err;
+                alpha_best = alpha;
+                gamma_best = gamma;
+                y_best = y_sim;
+            end
+        end
+    end
+    
+    % Stampare risultati
+    fprintf('Parametri ottimali trovati:\n');
+    fprintf('alpha = %.4f\n', alpha_best);
+    fprintf('gamma = %.4f\n', gamma_best);
+    
+    % Conversione finale in eV per visualizzazione (se vuoi)
+    k_B = 8.617e-5; % eV/K
+    fprintf('Temperature finali (eV):\n');
+    fprintf('Tomp final = %.3f eV\n', k_B * y_best(end,1));
+    fprintf('Ttar final = %.3f eV\n', k_B * y_best(end,3));
+end

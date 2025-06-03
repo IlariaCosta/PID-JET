@@ -1,4 +1,4 @@
-function [alpha_best, gamma_best] = fit_alpha_gamma(t_data, Tomp_interp, Ttar_interp, P_cond_interp, q_rad_data, Text, ci_T_omp, ci_T_tar, alpha_best, gamma_best)
+function [alpha_best, gamma_best] = fit_alpha_gamma(t_data, Tomp_interp, Ttar_interp, P_cond_interp, q_rad_data, ci_T_omp, ci_T_tar, alpha_best, gamma_best)
    % === STIMA DI ALPHA E GAMMA CON RICERCA A GRIGLIA === 
     alphas = linspace(0.01, 100, 100);    
     gammas = linspace(0.01, 100, 100);    

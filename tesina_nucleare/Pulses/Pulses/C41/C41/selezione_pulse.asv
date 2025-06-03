@@ -185,8 +185,19 @@ clc
 %% 1. Sparo 99432
 load param_impurezze_sparo_1.mat
 clc
-[alpha_best, gamma_best, y_best, t_common] = fit_alpha_gamma_targets(temp_omp_data, temp_tar_data, out.P_cond, out.qrad, 273);
+% dati time series
+t_data = temp_omp_data.Time; % o vettore tempo comune
 
+% costruisci funzioni interpolanti
+P_cond_fun = @(t) interp1(out.P_cond.Time, out.P_cond.Data, t, 'linear', 'extrap');
+q_rad_fun  = @(t) interp1(out.qrad.Time,  out.qrad.Data,  t, 'linear', 'extrap');
+Tomp_data_fun = @(t) interp1(Tomp_data.Time, Tomp_data.Data, t, 'linear', 'extrap');
+Ttar_data_fun = @(t) interp1(Ttar_data.Time, Ttar_data.Data, t, 'linear', 'extrap');
+
+
+% chiama la funzione di fitting
+[alpha_best, gamma_best, y_best] = fit_alpha_gamma_targets(t_data, temp_omp_data.Data, temp_tar_data.Data, P_cond_fun, q_rad_fun); 
+% ad esempio Text = 300 K (temperatura ambiente)
 
 % fit_impurezze('param_impurezze_sparo_1.mat');
 % ottimizza_temp_PID(temp_core_data, temp_omp_data, temp_tar_data, n_core_data, P_tot, Z_eff);

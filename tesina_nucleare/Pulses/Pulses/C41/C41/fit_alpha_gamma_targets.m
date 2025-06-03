@@ -29,8 +29,8 @@ function [alpha_best, gamma_best, y_best, t_common] = fit_alpha_gamma_targets(To
     k_B = 8.617e-5; % costante di Boltzmann [eV/K]
     
     % --- Range parametri da testare ---
-    alphas = linspace(0.01, 10, 50);    % puoi regolare range e numero punti
-    gammas = linspace(0.01, 10, 50);
+    alphas = linspace(100, 1000, 50);    % puoi regolare range e numero punti
+    gammas = linspace(100, 1000, 50);
     
     % --- Inizializza ricerca parametri ---
     min_err = inf;

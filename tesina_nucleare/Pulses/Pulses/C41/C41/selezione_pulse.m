@@ -7,8 +7,8 @@ close all
 load dati_conf.mat;
 
 %%
-% cartella = "/Users/Ilaria/Documents/GitHub/PID-JET/tesina_nucleare/Pulses/Pulses/C41/C41"
-cartella = "C:\Users\costa\Documents\GitHub\PID-JET\tesina_nucleare\Pulses\Pulses\C41\C41"
+cartella = "/Users/Ilaria/Documents/GitHub/PID-JET/tesina_nucleare/Pulses/Pulses/C41/C41"
+%cartella = "C:\Users\costa\Documents\GitHub\PID-JET\tesina_nucleare\Pulses\Pulses\C41\C41"
 files = dir(fullfile(cartella,'*.mat*'))
 files = files(~[files.isdir]);
 nomiFile = {files.name};
@@ -185,7 +185,7 @@ clc
 %% 1. Sparo 99432
 load param_impurezze_sparo_1.mat
 clc
-[alpha_best, gamma_best, y_best, t_common] = fit_alpha_gamma_targets(temp_omp_data, temp_tar_data, out.P_cond, out.qrad, 273);
+%[alpha_best, gamma_best, y_best, t_common] = fit_alpha_gamma_targets(temp_omp_data, temp_tar_data, out.P_cond, out.qrad, 273);
 
 
 % fit_impurezze('param_impurezze_sparo_1.mat');

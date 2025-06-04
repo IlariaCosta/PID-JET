@@ -7,8 +7,8 @@ close all
 load dati_conf.mat;
 
 %%
-cartella = "/Users/Ilaria/Documents/GitHub/PID-JET/tesina_nucleare/Pulses/Pulses/C41/C41"
-%cartella = "C:\Users\costa\Documents\GitHub\PID-JET\tesina_nucleare\Pulses\Pulses\C41\C41"
+% cartella = "/Users/Ilaria/Documents/GitHub/PID-JET/tesina_nucleare/Pulses/Pulses/C41/C41"
+cartella = "C:\Users\costa\Documents\GitHub\PID-JET\tesina_nucleare\Pulses\Pulses\C41\C41"
 files = dir(fullfile(cartella,'*.mat*'))
 files = files(~[files.isdir]);
 nomiFile = {files.name};

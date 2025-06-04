@@ -112,6 +112,12 @@ load dati_conf.mat;
 
 %% IMPOSTAZIONI SCOPE
 clc
+fig = figure(1);              % Ottiene la figura corrente
+axs = findall(fig, 'Type', 'axes'); 
+set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
+lgd = findall(fig, 'Type', 'Legend');
+set(lgd, 'FontSize', 14);
+
 fig = figure(2);              % Ottiene la figura corrente
 axs = findall(fig, 'Type', 'axes'); 
 set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
@@ -125,12 +131,6 @@ lgd = findall(fig, 'Type', 'Legend');
 set(lgd, 'FontSize', 14);
 
 fig = figure(4);              % Ottiene la figura corrente
-axs = findall(fig, 'Type', 'axes'); 
-set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
-lgd = findall(fig, 'Type', 'Legend');
-set(lgd, 'FontSize', 14);
-
-fig = figure(1);              % Ottiene la figura corrente
 axs = findall(fig, 'Type', 'axes'); 
 set(axs, 'FontSize', 14);  % Cambia la dimensione del font degli assi
 lgd = findall(fig, 'Type', 'Legend');
